@@ -1,1 +1,1 @@
-# Gor
+# Gor Language
