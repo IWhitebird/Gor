@@ -47,45 +47,55 @@ type Token struct {
 	Value string
 }
 
-// token returns a Token based on the given string.
-func token(t string) Token {
-	switch t {
-	case "=":
-		return Token{Equals, "="}
-	case "+", "-", "*", "/":
-		return Token{BinaryOperator, t}
-	case "(":
-		return Token{OpenParenthesis, "("}
-	case ")":
-		return Token{CloseParenthesis, ")"}
-	default:
-		if isNumber(t) {
-			return Token{Number, t}
-		} else if tokenType, exists := KEYWORDS[t]; exists {
-			return Token{tokenType, t}
-		} else {
-			return Token{Identifier, t}
-		}
-	}
-}
-
-// Tokenize generates a slice of tokens from the given input string.
-func Tokenize(inputToken string) []Token {
-	var tokens []Token
-	for _, t := range strings.Fields(inputToken) {
-		t = strings.Trim(t, " \t\n")
-		if t != "" {
-			fmt.Println(t)
-			tokens = append(tokens, token(t))
-		}
-	}
-	return tokens
+// token creates a new token with the given type and value.
+func token(value string, tokenType TokenType) Token {
+	return Token{Value: value, Type: tokenType}
 }
 
 // isNumber checks if a given string represents a number.
 func isNumber(s string) bool {
 	_, err := strconv.ParseFloat(s, 64)
 	return err == nil
+}
+
+// isAlpha checks if a given string represents an alphabetic character.
+func isAlpha(s string) bool {
+	return strings.ToLower(s) == strings.ToUpper(s)
+}
+
+// isSkippable check if the given character is useless
+func isSkippable(s string) bool {
+	return s == " " || s == "\t" || s == "\n"
+}
+
+// Tokenize generates a slice of tokens from the given input string.
+func Tokenize(inputToken string) []Token {
+	var tokens []Token
+	for i := 0; i < len(inputToken); i++ {
+
+		var t string = inputToken[i : i+1]
+
+		if t == " " || t == "\t" || t == "\n" {
+			continue
+		}
+
+		if t != "" {
+
+			switch t {
+			case "=":
+				tokens = append(tokens, token(t, Equals))
+			case "+", "-", "*", "/":
+				tokens = append(tokens, token(t, BinaryOperator))
+			case "(":
+				tokens = append(tokens, token(t, OpenParenthesis))
+			case ")":
+				tokens = append(tokens, token(t, CloseParenthesis))
+
+			}
+
+		}
+	}
+	return tokens
 }
 
 func Main() {
