@@ -22,20 +22,28 @@ import (
 type TokenType int
 
 const (
-	Number           TokenType = iota // 0
-	Identifier                        // 1
-	Equals                            // 2
-	OpenParenthesis                   // 3
-	CloseParenthesis                  // 4
-	BinaryOperator                    // 5
+
+	// Litreals
+	Number     TokenType = iota // 0
+	Identifier                  // 1
+
+	// Operators
+	Equals           // 2
+	OpenParenthesis  // 3
+	CloseParenthesis // 4
+	BinaryOperator   // 5
 
 	// Keywords
 	Let    // 6
 	If     // 7
 	Else   // 8
 	Return // 9
+
+	// End of File
+	EOF // 10
 )
 
+// KEYWORDS maps keyword strings to their corresponding token types.
 const (
 	letStr    = "let"
 	ifStr     = "if"
@@ -43,7 +51,6 @@ const (
 	returnStr = "return"
 )
 
-// KEYWORDS maps keyword strings to their corresponding token types.
 var KEYWORDS = map[string]TokenType{
 	letStr:    Let,
 	ifStr:     If,
@@ -137,6 +144,7 @@ func Tokenize(inputToken string) []Token {
 
 		}
 	}
+	tokens = append(tokens, token("EndOfFile", EOF))
 	return tokens
 }
 

@@ -3,6 +3,7 @@ package main
 import (
 	"Gor/ast"
 	"Gor/lexer"
+	"Gor/parser"
 	"fmt"
 )
 
@@ -11,4 +12,5 @@ func main() {
 
 	lexer.Main()
 	ast.Main()
+	parser.Main()
 }
