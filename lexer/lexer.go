@@ -1,3 +1,13 @@
+/*
+
+---------------------------GOR LEXER-----------------------------
+=================================================================
+Package lexer implements a lexer for the Gor programming language.
+The lexer takes a string of input and splits it into a slice of tokens.
+=================================================================
+
+*/
+
 package lexer
 
 import (
@@ -60,7 +70,7 @@ func isNumber(s string) bool {
 
 // isAlpha checks if a given string represents an alphabetic character.
 func isAlpha(s string) bool {
-	return strings.ToLower(s) == strings.ToUpper(s)
+	return (s >= "a" && s <= "z") || (s >= "A" && s <= "Z") || s == "_"
 }
 
 // isSkippable check if the given character is useless
@@ -90,7 +100,39 @@ func Tokenize(inputToken string) []Token {
 				tokens = append(tokens, token(t, OpenParenthesis))
 			case ")":
 				tokens = append(tokens, token(t, CloseParenthesis))
-
+			default:
+				if isNumber(t) {
+					var number string = t
+					for j := i + 1; j < len(inputToken); j++ {
+						if isNumber(inputToken[j : j+1]) {
+							number += inputToken[j : j+1]
+							i++
+						} else {
+							break
+						}
+					}
+					tokens = append(tokens, token(number, Number))
+				} else if isAlpha(t) {
+					var identifier string = t
+					for j := i + 1; j < len(inputToken); j++ {
+						if isAlpha(inputToken[j : j+1]) {
+							identifier += inputToken[j : j+1]
+							i++
+						} else {
+							break
+						}
+					}
+					fmt.Println(identifier)
+					if tokenType, ok := KEYWORDS[identifier]; ok {
+						tokens = append(tokens, token(identifier, tokenType))
+					} else {
+						tokens = append(tokens, token(identifier, Identifier))
+					}
+				} else if isSkippable(t) {
+					continue
+				} else {
+					fmt.Println("Unknown Token: ", t)
+				}
 			}
 
 		}
@@ -99,6 +141,8 @@ func Tokenize(inputToken string) []Token {
 }
 
 func Main() {
+
+	// fmt.Println(">> Welcome To Gor Lexer >:D")
 	// Take Input from User
 	// reader := bufio.NewReader(os.Stdin)
 
@@ -131,7 +175,8 @@ func Main() {
 	tokens := Tokenize(input)
 
 	for _, token := range tokens {
-		fmt.Println("Token Type: ", token.Type, " Token Value: ", token.Value)
+
+		fmt.Println("Token Type: ", token.Type, "Token Value: ", token.Value)
 	}
 
 }
