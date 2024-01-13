@@ -2,38 +2,61 @@ package parser
 
 import (
 	AST "Gor/ast"
-	Lex "Gor/lexer"
+	LEX "Gor/lexer"
 	"fmt"
 	"os"
 	"strconv"
 )
 
 type Parser struct {
-	tokens []Lex.Token
+	tokens []LEX.Token
 }
 
-func (p *Parser) peek() Lex.Token {
+func (p *Parser) peek() LEX.Token {
 	return p.tokens[0]
 }
 
-func (p *Parser) consume() Lex.Token {
-	var token Lex.Token = p.tokens[0]
+func (p *Parser) consume() LEX.Token {
+	var token LEX.Token = p.peek()
+
 	p.tokens = p.tokens[1:]
 	return token
 }
 
-func (p *Parser) not_Eof() bool {
-	return p.tokens[0].Type != Lex.EOF
+func (p *Parser) not_check(tokenTypes []LEX.TokenType, errorMessage string) bool {
+
+	for _, tokenType := range tokenTypes {
+		if p.peek().Type == tokenType {
+			return false
+		}
+	}
+
+	fmt.Println(errorMessage)
+	os.Exit(1)
+	return true
 }
 
-func (p *Parser) produceAst(sourceCode string) AST.Program {
+func (p *Parser) expect(tokenType LEX.TokenType, errorMessage string) {
+	if p.peek().Type == tokenType {
+		p.consume()
+	} else {
+		fmt.Println(errorMessage)
+		os.Exit(1)
+	}
+}
 
-	p.tokens = Lex.Tokenize(sourceCode)
+func (p *Parser) not_Eof() bool {
+	return p.tokens[0].Type != LEX.EOF
+}
+
+func (p *Parser) ProduceAst(sourceCode string) AST.Program {
+
+	p.tokens = LEX.Tokenize(sourceCode)
 
 	var program AST.Program = AST.Program{KindValue: AST.ProgramType, Body: []AST.Stmt{}}
 
 	for p.not_Eof() {
-		program.Body = append(p.parseStmt())
+		program.Body = append(program.Body, p.parseStmt())
 	}
 
 	return program
@@ -53,7 +76,35 @@ func (p *Parser) parseStmt() AST.Stmt {
 }
 
 func (p *Parser) parseExpr() AST.Expr {
-	return p.parsePrimaryExpr()
+	return p.parseAdditiveExpr()
+}
+
+func (p *Parser) parseAdditiveExpr() AST.Expr {
+	left := p.parseMultiplicativeExpr()
+
+	p.not_check([]LEX.TokenType{LEX.BinaryOperator, LEX.OpenParenthesis, LEX.CloseParenthesis, LEX.Identifier, LEX.Number}, "Error: Invalid Token")
+
+	for p.peek().Value == "+" || p.peek().Value == "-" {
+		op := p.consume().Value
+		right := p.parseMultiplicativeExpr()
+		left = AST.BinaryExpr{KindValue: "BinaryExpr", Operator: op, Left: left, Right: right}
+	}
+
+	return left
+}
+
+func (p *Parser) parseMultiplicativeExpr() AST.Expr {
+	left := p.parsePrimaryExpr()
+
+	p.not_check([]LEX.TokenType{LEX.BinaryOperator, LEX.OpenParenthesis, LEX.CloseParenthesis, LEX.Identifier, LEX.Number}, "Error: Invalid Token")
+
+	for p.peek().Value == "*" || p.peek().Value == "/" || p.peek().Value == "%" {
+		op := p.consume().Value
+		right := p.parsePrimaryExpr()
+		left = AST.BinaryExpr{KindValue: "BinaryExpr", Operator: op, Left: left, Right: right}
+	}
+
+	return left
 }
 
 func (p *Parser) parsePrimaryExpr() AST.Expr {
@@ -62,30 +113,24 @@ func (p *Parser) parsePrimaryExpr() AST.Expr {
 
 	switch tk {
 
-	case Lex.Identifier:
+	case LEX.Identifier:
 		return AST.Identifier{KindValue: "Identifier", Symbol: p.consume().Value}
 
-	case Lex.Number:
-		return AST.NumericLiteral{KindValue: "Number", Value: p.parseInt(p.consume().Value)}
+	case LEX.Number:
+		return AST.NumericLiteral{KindValue: "NumericLiteral", Value: p.parseInt(p.consume().Value)}
+	case LEX.OpenParenthesis:
+		p.consume()
+		expr := p.parseExpr()
+		p.expect(LEX.CloseParenthesis, "Error: Missing Closing Parenthesis")
+		return expr
 
-	case Lex.BinaryOperator:
-		return AST.BinaryExpr{
-			KindValue: "BinaryExpr", 
-			Left: p.consume().Value, 
-			Right: p.consume().Value, 
-			Operator: p.consume().Value
-		}
-	
 	default:
 		fmt.Println("Error: Invalid Token")
 		os.Exit(1)
-
+		return nil
 	}
-
-	return AST.Expr{}
 }
 
 func Main() {
-	fmt.Println(">> Welcome To Gor Parser >:D")
-	fmt.Println(Lex.Tokenize("var a = 1 + 2"))
+	// fmt.Println(">> Parser Running >>")
 }

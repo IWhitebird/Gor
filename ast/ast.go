@@ -1,7 +1,5 @@
 package ast
 
-import "fmt"
-
 /*
 NodeType represents the type of a node.
 */
@@ -79,5 +77,5 @@ func (n NumericLiteral) Kind() NodeType {
 }
 
 func Main() {
-	fmt.Println(">> Welcome To Gor AST >:D")
+	// fmt.Println(">> AST Running >>")
 }

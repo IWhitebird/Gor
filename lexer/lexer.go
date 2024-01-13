@@ -11,11 +11,8 @@ The lexer takes a string of input and splits it into a slice of tokens.
 package lexer
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"strconv"
-	"strings"
 )
 
 // TokenType represents the type of a token.
@@ -101,7 +98,7 @@ func Tokenize(inputToken string) []Token {
 			switch t {
 			case "=":
 				tokens = append(tokens, token(t, Equals))
-			case "+", "-", "*", "/":
+			case "+", "-", "*", "/", "%":
 				tokens = append(tokens, token(t, BinaryOperator))
 			case "(":
 				tokens = append(tokens, token(t, OpenParenthesis))
@@ -129,7 +126,6 @@ func Tokenize(inputToken string) []Token {
 							break
 						}
 					}
-					fmt.Println(identifier)
 					if tokenType, ok := KEYWORDS[identifier]; ok {
 						tokens = append(tokens, token(identifier, tokenType))
 					} else {
@@ -150,41 +146,34 @@ func Tokenize(inputToken string) []Token {
 
 func Main() {
 
-	// fmt.Println(">> Welcome To Gor Lexer >:D")
-	// Take Input from User
-	// reader := bufio.NewReader(os.Stdin)
+	// fmt.Println(">> Lexer Running >>")
 
-	// fmt.Print(">> ")
-	// input, _ := reader.ReadString('\n')
+	// file, err := os.Open("input.txt")
 
-	// Take Input from File
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	os.Exit(1)
+	// }
+	// defer file.Close()
 
-	file, err := os.Open("input.txt")
+	// // Create a new Scanner for the file
+	// scanner := bufio.NewScanner(file)
 
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	defer file.Close()
+	// // Loop over all lines in the file and print them
+	// var input string
+	// for scanner.Scan() {
+	// 	input += scanner.Text()
+	// }
 
-	// Create a new Scanner for the file
-	scanner := bufio.NewScanner(file)
+	// // Remove the newline character
+	// input = strings.Replace(input, "\n", "", -1)
 
-	// Loop over all lines in the file and print them
-	var input string
-	for scanner.Scan() {
-		input += scanner.Text()
-	}
+	// // Tokenize the inputToken
+	// tokens := Tokenize(input)
 
-	// Remove the newline character
-	input = strings.Replace(input, "\n", "", -1)
+	// for _, token := range tokens {
 
-	// Tokenize the inputToken
-	tokens := Tokenize(input)
-
-	for _, token := range tokens {
-
-		fmt.Println("Token Type: ", token.Type, "Token Value: ", token.Value)
-	}
+	// 	fmt.Println("Token Type: ", token.Type, "Token Value: ", token.Value)
+	// }
 
 }
