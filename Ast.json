@@ -1,0 +1,30 @@
+[
+  {
+    "KindValue": "BinaryExpr",
+    "Left": {
+      "KindValue": "NumericLiteral",
+      "Value": 5
+    },
+    "Right": {
+      "KindValue": "BinaryExpr",
+      "Left": {
+        "KindValue": "NumericLiteral",
+        "Value": 2
+      },
+      "Right": {
+        "KindValue": "BinaryExpr",
+        "Left": {
+          "KindValue": "Identifier",
+          "Symbol": "a"
+        },
+        "Right": {
+          "KindValue": "Identifier",
+          "Symbol": "b"
+        },
+        "Operator": "+"
+      },
+      "Operator": "*"
+    },
+    "Operator": "+"
+  }
+]

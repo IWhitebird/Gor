@@ -1,31 +1,46 @@
+/*
+
+---------------------------GOR LEXER-----------------------------
+=================================================================
+Package lexer implements a lexer for the Gor programming language.
+The lexer takes a string of input and splits it into a slice of tokens.
+=================================================================
+
+*/
+
 package lexer
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"strconv"
-	"strings"
 )
 
 // TokenType represents the type of a token.
 type TokenType int
 
 const (
-	Number           TokenType = iota // 0
-	Identifier                        // 1
-	Equals                            // 2
-	OpenParenthesis                   // 3
-	CloseParenthesis                  // 4
-	BinaryOperator                    // 5
+
+	// Litreals
+	Number     TokenType = iota // 0
+	Identifier                  // 1
+
+	// Operators
+	Equals           // 2
+	OpenParenthesis  // 3
+	CloseParenthesis // 4
+	BinaryOperator   // 5
 
 	// Keywords
 	Let    // 6
 	If     // 7
 	Else   // 8
 	Return // 9
+
+	// End of File
+	EOF // 10
 )
 
+// KEYWORDS maps keyword strings to their corresponding token types.
 const (
 	letStr    = "let"
 	ifStr     = "if"
@@ -33,7 +48,6 @@ const (
 	returnStr = "return"
 )
 
-// KEYWORDS maps keyword strings to their corresponding token types.
 var KEYWORDS = map[string]TokenType{
 	letStr:    Let,
 	ifStr:     If,
@@ -47,39 +61,9 @@ type Token struct {
 	Value string
 }
 
-// token returns a Token based on the given string.
-func token(t string) Token {
-	switch t {
-	case "=":
-		return Token{Equals, "="}
-	case "+", "-", "*", "/":
-		return Token{BinaryOperator, t}
-	case "(":
-		return Token{OpenParenthesis, "("}
-	case ")":
-		return Token{CloseParenthesis, ")"}
-	default:
-		if isNumber(t) {
-			return Token{Number, t}
-		} else if tokenType, exists := KEYWORDS[t]; exists {
-			return Token{tokenType, t}
-		} else {
-			return Token{Identifier, t}
-		}
-	}
-}
-
-// Tokenize generates a slice of tokens from the given input string.
-func Tokenize(inputToken string) []Token {
-	var tokens []Token
-	for _, t := range strings.Fields(inputToken) {
-		t = strings.Trim(t, " \t\n")
-		if t != "" {
-			fmt.Println(t)
-			tokens = append(tokens, token(t))
-		}
-	}
-	return tokens
+// token creates a new token with the given type and value.
+func token(value string, tokenType TokenType) Token {
+	return Token{Value: value, Type: tokenType}
 }
 
 // isNumber checks if a given string represents a number.
@@ -88,40 +72,108 @@ func isNumber(s string) bool {
 	return err == nil
 }
 
+// isAlpha checks if a given string represents an alphabetic character.
+func isAlpha(s string) bool {
+	return (s >= "a" && s <= "z") || (s >= "A" && s <= "Z") || s == "_"
+}
+
+// isSkippable check if the given character is useless
+func isSkippable(s string) bool {
+	return s == " " || s == "\t" || s == "\n"
+}
+
+// Tokenize generates a slice of tokens from the given input string.
+func Tokenize(inputToken string) []Token {
+	var tokens []Token
+	for i := 0; i < len(inputToken); i++ {
+
+		var t string = inputToken[i : i+1]
+
+		if t == " " || t == "\t" || t == "\n" {
+			continue
+		}
+
+		if t != "" {
+
+			switch t {
+			case "=":
+				tokens = append(tokens, token(t, Equals))
+			case "+", "-", "*", "/", "%":
+				tokens = append(tokens, token(t, BinaryOperator))
+			case "(":
+				tokens = append(tokens, token(t, OpenParenthesis))
+			case ")":
+				tokens = append(tokens, token(t, CloseParenthesis))
+			default:
+				if isNumber(t) {
+					var number string = t
+					for j := i + 1; j < len(inputToken); j++ {
+						if isNumber(inputToken[j : j+1]) {
+							number += inputToken[j : j+1]
+							i++
+						} else {
+							break
+						}
+					}
+					tokens = append(tokens, token(number, Number))
+				} else if isAlpha(t) {
+					var identifier string = t
+					for j := i + 1; j < len(inputToken); j++ {
+						if isAlpha(inputToken[j : j+1]) {
+							identifier += inputToken[j : j+1]
+							i++
+						} else {
+							break
+						}
+					}
+					if tokenType, ok := KEYWORDS[identifier]; ok {
+						tokens = append(tokens, token(identifier, tokenType))
+					} else {
+						tokens = append(tokens, token(identifier, Identifier))
+					}
+				} else if isSkippable(t) {
+					continue
+				} else {
+					fmt.Println("Unknown Token: ", t)
+				}
+			}
+
+		}
+	}
+	tokens = append(tokens, token("EndOfFile", EOF))
+	return tokens
+}
+
 func Main() {
-	// Take Input from User
-	// reader := bufio.NewReader(os.Stdin)
 
-	// fmt.Print(">> ")
-	// input, _ := reader.ReadString('\n')
+	// fmt.Println(">> Lexer Running >>")
 
-	// Take Input from File
+	// file, err := os.Open("input.txt")
 
-	file, err := os.Open("input.txt")
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	os.Exit(1)
+	// }
+	// defer file.Close()
 
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	defer file.Close()
+	// // Create a new Scanner for the file
+	// scanner := bufio.NewScanner(file)
 
-	// Create a new Scanner for the file
-	scanner := bufio.NewScanner(file)
+	// // Loop over all lines in the file and print them
+	// var input string
+	// for scanner.Scan() {
+	// 	input += scanner.Text()
+	// }
 
-	// Loop over all lines in the file and print them
-	var input string
-	for scanner.Scan() {
-		input += scanner.Text()
-	}
+	// // Remove the newline character
+	// input = strings.Replace(input, "\n", "", -1)
 
-	// Remove the newline character
-	input = strings.Replace(input, "\n", "", -1)
+	// // Tokenize the inputToken
+	// tokens := Tokenize(input)
 
-	// Tokenize the inputToken
-	tokens := Tokenize(input)
+	// for _, token := range tokens {
 
-	for _, token := range tokens {
-		fmt.Println("Token Type: ", token.Type, " Token Value: ", token.Value)
-	}
+	// 	fmt.Println("Token Type: ", token.Type, "Token Value: ", token.Value)
+	// }
 
 }
