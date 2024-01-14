@@ -9,17 +9,17 @@
       "KindValue": "BinaryExpr",
       "Left": {
         "KindValue": "NumericLiteral",
-        "Value": 2
+        "Value": 6
       },
       "Right": {
         "KindValue": "BinaryExpr",
         "Left": {
-          "KindValue": "Identifier",
-          "Symbol": "a"
+          "KindValue": "NumericLiteral",
+          "Value": 9
         },
         "Right": {
-          "KindValue": "Identifier",
-          "Symbol": "b"
+          "KindValue": "NumericLiteral",
+          "Value": 10
         },
         "Operator": "+"
       },

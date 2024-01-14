@@ -18,23 +18,26 @@ func (p *Parser) peek() LEX.Token {
 
 func (p *Parser) consume() LEX.Token {
 	var token LEX.Token = p.peek()
-
 	p.tokens = p.tokens[1:]
+
+	if token.Type == LEX.Null {
+		token.Value = "null"
+	}
 	return token
 }
 
-func (p *Parser) not_check(tokenTypes []LEX.TokenType, errorMessage string) bool {
+// func (p *Parser) not_check(tokenTypes []LEX.TokenType, errorMessage string) bool {
 
-	for _, tokenType := range tokenTypes {
-		if p.peek().Type == tokenType {
-			return false
-		}
-	}
+// 	for _, tokenType := range tokenTypes {
+// 		if p.peek().Type == tokenType {
+// 			return false
+// 		}
+// 	}
 
-	fmt.Println(errorMessage)
-	os.Exit(1)
-	return true
-}
+// 	fmt.Println(errorMessage)
+// 	os.Exit(1)
+// 	return true
+// }
 
 func (p *Parser) expect(tokenType LEX.TokenType, errorMessage string) {
 	if p.peek().Type == tokenType {
@@ -82,7 +85,7 @@ func (p *Parser) parseExpr() AST.Expr {
 func (p *Parser) parseAdditiveExpr() AST.Expr {
 	left := p.parseMultiplicativeExpr()
 
-	p.not_check([]LEX.TokenType{LEX.BinaryOperator, LEX.OpenParenthesis, LEX.CloseParenthesis, LEX.Identifier, LEX.Number}, "Error: Invalid Token")
+	// p.not_check([]LEX.TokenType{LEX.BinaryOperator, LEX.OpenParenthesis, LEX.CloseParenthesis, LEX.Identifier, LEX.Number}, "Error: Invalid Token")
 
 	for p.peek().Value == "+" || p.peek().Value == "-" {
 		op := p.consume().Value
@@ -96,7 +99,7 @@ func (p *Parser) parseAdditiveExpr() AST.Expr {
 func (p *Parser) parseMultiplicativeExpr() AST.Expr {
 	left := p.parsePrimaryExpr()
 
-	p.not_check([]LEX.TokenType{LEX.BinaryOperator, LEX.OpenParenthesis, LEX.CloseParenthesis, LEX.Identifier, LEX.Number}, "Error: Invalid Token")
+	// p.not_check([]LEX.TokenType{LEX.BinaryOperator, LEX.OpenParenthesis, LEX.CloseParenthesis, LEX.Identifier, LEX.Number}, "Error: Invalid Token")
 
 	for p.peek().Value == "*" || p.peek().Value == "/" || p.peek().Value == "%" {
 		op := p.consume().Value
@@ -110,12 +113,12 @@ func (p *Parser) parseMultiplicativeExpr() AST.Expr {
 func (p *Parser) parsePrimaryExpr() AST.Expr {
 
 	tk := p.peek().Type
-
 	switch tk {
 
 	case LEX.Identifier:
 		return AST.Identifier{KindValue: "Identifier", Symbol: p.consume().Value}
-
+	case LEX.Null:
+		return AST.NullLiteral{KindValue: "NullLiteral", Value: p.consume().Value}
 	case LEX.Number:
 		return AST.NumericLiteral{KindValue: "NumericLiteral", Value: p.parseInt(p.consume().Value)}
 	case LEX.OpenParenthesis:
@@ -123,10 +126,8 @@ func (p *Parser) parsePrimaryExpr() AST.Expr {
 		expr := p.parseExpr()
 		p.expect(LEX.CloseParenthesis, "Error: Missing Closing Parenthesis")
 		return expr
-
 	default:
 		fmt.Println("Error: Invalid Token")
-		os.Exit(1)
 		return nil
 	}
 }

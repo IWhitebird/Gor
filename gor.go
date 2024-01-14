@@ -1,6 +1,7 @@
 package main
 
 import (
+	ITR "Gor/interpreter"
 	PSR "Gor/parser"
 	"bufio"
 	"encoding/json"
@@ -30,7 +31,7 @@ func main() {
 
 		program := parser.ProduceAst(input)
 
-		fmt.Println("Node Value : ", program.KindValue)
+		// fmt.Println("Node Value : ", program.KindValue)
 
 		bodyJSON, err := json.MarshalIndent(program.Body, "", "  ")
 		if err != nil {
@@ -38,7 +39,7 @@ func main() {
 			return
 		}
 
-		fmt.Println("Node Body JSON : ", string(bodyJSON))
+		// fmt.Println("Node Body JSON : ", string(bodyJSON))
 
 		// Write JSON data to the file
 		if OutputFileErr == nil {
@@ -49,6 +50,10 @@ func main() {
 		} else {
 			fmt.Println("Error opening file:", OutputFileErr)
 		}
+
+		evaluatedProgram := ITR.Eval_program(program)
+
+		fmt.Println("Evaluated Program : ", evaluatedProgram)
 	}
 
 	if err := scanner.Err(); err != nil {

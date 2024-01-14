@@ -22,22 +22,23 @@ const (
 
 	// Litreals
 	Number     TokenType = iota // 0
-	Identifier                  // 1
+	Null                        // 1
+	Identifier                  // 2
 
 	// Operators
-	Equals           // 2
-	OpenParenthesis  // 3
-	CloseParenthesis // 4
-	BinaryOperator   // 5
+	Equals           // 3
+	OpenParenthesis  // 4
+	CloseParenthesis // 5
+	BinaryOperator   // 6
 
 	// Keywords
-	Let    // 6
-	If     // 7
-	Else   // 8
-	Return // 9
+	Let    // 7
+	If     // 8
+	Else   // 9
+	Return // 10
 
 	// End of File
-	EOF // 10
+	EOF // 11
 )
 
 // KEYWORDS maps keyword strings to their corresponding token types.
@@ -46,6 +47,7 @@ const (
 	ifStr     = "if"
 	elseStr   = "else"
 	returnStr = "return"
+	nullStr   = "null"
 )
 
 var KEYWORDS = map[string]TokenType{
@@ -53,6 +55,7 @@ var KEYWORDS = map[string]TokenType{
 	ifStr:     If,
 	elseStr:   Else,
 	returnStr: Return,
+	nullStr:   Null,
 }
 
 // Token represents a lexical token with a type and a value.

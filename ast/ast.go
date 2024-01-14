@@ -8,6 +8,7 @@ type NodeType string
 const (
 	ProgramType        NodeType = "Program"
 	NumericLiteralType NodeType = "NumericLiteral"
+	NullLiretalType    NodeType = "NullLiteral"
 	IdentifierType     NodeType = "Identifier"
 	BinaryExprType     NodeType = "BinaryExpr"
 )
@@ -73,6 +74,18 @@ type NumericLiteral struct {
 }
 
 func (n NumericLiteral) Kind() NodeType {
+	return n.KindValue
+}
+
+/*
+NullLiteral represents a null constant inside the source code.
+*/
+type NullLiteral struct {
+	KindValue NodeType
+	Value     string
+}
+
+func (n NullLiteral) Kind() NodeType {
 	return n.KindValue
 }
 
