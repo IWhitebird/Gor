@@ -1,7 +1,6 @@
 package main
 
 import (
-	EVL "Gor/eval"
 	ITR "Gor/interpreter"
 	PSR "Gor/parser"
 	"bufio"
@@ -63,7 +62,7 @@ func main() {
 			fmt.Println("Error opening file:", OutputFileErr)
 		}
 
-		evaluatedProgram := EVL.Eval_program(program, *env)
+		evaluatedProgram := ITR.Eval_program(program, *env)
 
 		fmt.Println("Evaluated Program : ", evaluatedProgram)
 	}
