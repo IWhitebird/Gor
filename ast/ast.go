@@ -6,9 +6,13 @@ NodeType represents the type of a node.
 type NodeType string
 
 const (
-	ProgramType        NodeType = "Program"
+
+	// Statements
+	ProgramType             NodeType = "Program"
+	VariableDeclarationType NodeType = "VariableDeclaration"
+
+	// Expressions
 	NumericLiteralType NodeType = "NumericLiteral"
-	NullLiretalType    NodeType = "NullLiteral"
 	IdentifierType     NodeType = "Identifier"
 	BinaryExprType     NodeType = "BinaryExpr"
 )
@@ -30,6 +34,20 @@ type Program struct {
 
 func (p Program) Kind() NodeType {
 	return p.KindValue
+}
+
+/*
+VariableDeclaration represents a variable declaration in the source.
+*/
+type VariableDeclaration struct {
+	KindValue  NodeType
+	Constant   bool
+	Identifier string
+	Value      Expr
+}
+
+func (v VariableDeclaration) Kind() NodeType {
+	return v.KindValue
 }
 
 /*
@@ -74,18 +92,6 @@ type NumericLiteral struct {
 }
 
 func (n NumericLiteral) Kind() NodeType {
-	return n.KindValue
-}
-
-/*
-NullLiteral represents a null constant inside the source code.
-*/
-type NullLiteral struct {
-	KindValue NodeType
-	Value     string
-}
-
-func (n NullLiteral) Kind() NodeType {
 	return n.KindValue
 }
 

@@ -20,9 +20,6 @@ func (p *Parser) consume() LEX.Token {
 	var token LEX.Token = p.peek()
 	p.tokens = p.tokens[1:]
 
-	if token.Type == LEX.Null {
-		token.Value = "null"
-	}
 	return token
 }
 
@@ -39,13 +36,14 @@ func (p *Parser) consume() LEX.Token {
 // 	return true
 // }
 
-func (p *Parser) expect(tokenType LEX.TokenType, errorMessage string) {
+func (p *Parser) expect(tokenType LEX.TokenType, errorMessage string) LEX.Token {
 	if p.peek().Type == tokenType {
-		p.consume()
+		return p.consume()
 	} else {
 		fmt.Println(errorMessage)
 		os.Exit(1)
 	}
+	return LEX.Token{}
 }
 
 func (p *Parser) not_Eof() bool {
@@ -75,7 +73,52 @@ func (p *Parser) parseInt(str string) int {
 }
 
 func (p *Parser) parseStmt() AST.Stmt {
-	return p.parseExpr()
+
+	switch p.peek().Type {
+	case LEX.Let:
+		return p.parseVariableDeclaration()
+	case LEX.Const:
+		return p.parseVariableDeclaration()
+	default:
+		return p.parseExpr()
+	}
+}
+
+func (p *Parser) parseVariableDeclaration() AST.Stmt {
+
+	isConst := p.peek().Type == LEX.Const
+	p.consume()
+
+	isIdentifier := p.expect(LEX.Identifier, "Error: Missing Identifier")
+
+	if p.peek().Type == LEX.Colon {
+		p.consume()
+
+		if isConst {
+			fmt.Println("Error: Const Variable Declaration cannot be without a value")
+			os.Exit(1)
+		}
+
+		return AST.VariableDeclaration{
+			KindValue:  AST.VariableDeclarationType,
+			Constant:   isConst,
+			Identifier: isIdentifier.Value,
+		}
+	}
+
+	p.expect(LEX.Equals, "Error: Missing Equals")
+
+	dec := AST.VariableDeclaration{
+		KindValue:  AST.VariableDeclarationType,
+		Constant:   isConst,
+		Identifier: isIdentifier.Value,
+		Value:      p.parseExpr(),
+	}
+
+	p.expect(LEX.Colon, "Error: Missing Semicolon")
+
+	return dec
+
 }
 
 func (p *Parser) parseExpr() AST.Expr {
@@ -117,8 +160,6 @@ func (p *Parser) parsePrimaryExpr() AST.Expr {
 
 	case LEX.Identifier:
 		return AST.Identifier{KindValue: "Identifier", Symbol: p.consume().Value}
-	case LEX.Null:
-		return AST.NullLiteral{KindValue: "NullLiteral", Value: p.consume().Value}
 	case LEX.Number:
 		return AST.NumericLiteral{KindValue: "NumericLiteral", Value: p.parseInt(p.consume().Value)}
 	case LEX.OpenParenthesis:

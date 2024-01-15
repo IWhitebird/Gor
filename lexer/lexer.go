@@ -22,17 +22,19 @@ const (
 
 	// Litreals
 	Number     TokenType = iota // 0
-	Null                        // 1
 	Identifier                  // 2
+	String
 
 	// Operators
 	Equals           // 3
 	OpenParenthesis  // 4
 	CloseParenthesis // 5
+	Colon            // 1
 	BinaryOperator   // 6
 
 	// Keywords
 	Let    // 7
+	Const  // 11
 	If     // 8
 	Else   // 9
 	Return // 10
@@ -47,7 +49,7 @@ const (
 	ifStr     = "if"
 	elseStr   = "else"
 	returnStr = "return"
-	nullStr   = "null"
+	constStr  = "const"
 )
 
 var KEYWORDS = map[string]TokenType{
@@ -55,7 +57,7 @@ var KEYWORDS = map[string]TokenType{
 	ifStr:     If,
 	elseStr:   Else,
 	returnStr: Return,
-	nullStr:   Null,
+	constStr:  Const,
 }
 
 // Token represents a lexical token with a type and a value.
@@ -107,6 +109,8 @@ func Tokenize(inputToken string) []Token {
 				tokens = append(tokens, token(t, OpenParenthesis))
 			case ")":
 				tokens = append(tokens, token(t, CloseParenthesis))
+			case ":":
+				tokens = append(tokens, token(t, Colon))
 			default:
 				if isNumber(t) {
 					var number string = t
