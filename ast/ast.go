@@ -12,6 +12,7 @@ const (
 	VariableDeclarationType NodeType = "VariableDeclaration"
 
 	// Expressions
+	AssignmentExprType NodeType = "AssignmentExpr"
 	NumericLiteralType NodeType = "NumericLiteral"
 	IdentifierType     NodeType = "Identifier"
 	BinaryExprType     NodeType = "BinaryExpr"
@@ -55,6 +56,20 @@ Expression will result in value at runtime.
 */
 type Expr interface {
 	Stmt
+}
+
+/*
+AssignmentExpr represents an assignment operation.
+*/
+
+type AssignmentExpr struct {
+	KindValue NodeType
+	Left      Expr
+	Right     Expr
+}
+
+func (a AssignmentExpr) Kind() NodeType {
+	return a.KindValue
 }
 
 /*

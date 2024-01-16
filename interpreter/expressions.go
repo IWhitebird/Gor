@@ -46,3 +46,14 @@ func Eval_identifier(identifier AST.Identifier, env Environment) RuntimeVal {
 	value := env.LookupVar(identifier.Symbol)
 	return value
 }
+
+func Eval_assignment_expr(assignmentExpr AST.AssignmentExpr, env Environment) RuntimeVal {
+	if assignmentExpr.Left.Kind() != AST.IdentifierType {
+		fmt.Println("Error: Invalid Assignment")
+		os.Exit(1)
+	}
+
+	varName := assignmentExpr.Left.(AST.Identifier).Symbol
+
+	return env.AssignVar(varName, Evaluate(assignmentExpr.Right, env))
+}

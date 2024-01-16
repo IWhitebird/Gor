@@ -7,25 +7,42 @@ import (
 type Environment struct {
 	ParentEnv *Environment
 	Variables map[string]RuntimeVal
+	Constants map[string]bool
 }
 
 func NewEnvironment(parentEnv *Environment) *Environment {
 	return &Environment{
 		ParentEnv: parentEnv,
 		Variables: make(map[string]RuntimeVal),
+		Constants: make(map[string]bool),
 	}
 }
-func (env *Environment) DeclareVar(varname string, value RuntimeVal) RuntimeVal {
+func (env *Environment) DeclareVar(varname string, value RuntimeVal, optionalParams ...bool) RuntimeVal {
 	if _, exists := env.Variables[varname]; exists {
 		fmt.Println("ERROR : Cannot declare variable, As it already is defined.", varname)
 	}
 
+	isConst := false
+
+	if len(optionalParams) > 0 {
+		isConst = optionalParams[0]
+	}
+
+	if isConst {
+		env.Constants[varname] = true
+	}
 	env.Variables[varname] = value
 	return value
 }
 
 func (env *Environment) AssignVar(varname string, value RuntimeVal) RuntimeVal {
 	resolvedEnv := env.Resolve(varname)
+
+	if env.Constants[varname] {
+		fmt.Println("ERROR : Cannot assign to constant variable.", varname)
+		return nil
+	}
+
 	resolvedEnv.Variables[varname] = value
 	return value
 }
@@ -45,4 +62,19 @@ func (env *Environment) Resolve(varname string) *Environment {
 	}
 
 	return env.ParentEnv.Resolve(varname)
+}
+
+func EnviromentSetup() *Environment {
+	// Environment Instance
+	parentEnv := NewEnvironment(nil)
+	env := NewEnvironment(parentEnv)
+
+	// Declare Variables
+	env.DeclareVar("a", MK_NUMBER(10))
+	env.DeclareVar("b", MK_NUMBER(20))
+	env.DeclareVar("null", MK_NULL())
+	env.DeclareVar("true", MK_BOOL(true))
+	env.DeclareVar("false", MK_BOOL(false))
+
+	return env
 }

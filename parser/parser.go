@@ -115,14 +115,26 @@ func (p *Parser) parseVariableDeclaration() AST.Stmt {
 		Value:      p.parseExpr(),
 	}
 
-	p.expect(LEX.Colon, "Error: Missing Semicolon")
+	p.expect(LEX.Colon, "Error: Missing Colon")
 
 	return dec
 
 }
 
 func (p *Parser) parseExpr() AST.Expr {
-	return p.parseAdditiveExpr()
+	return p.parseAssignmentExpr()
+}
+
+func (p *Parser) parseAssignmentExpr() AST.Expr {
+	left := p.parseAdditiveExpr()
+
+	if p.peek().Type == LEX.Equals {
+		p.consume()
+		right := p.parseAdditiveExpr()
+		return AST.AssignmentExpr{KindValue: AST.AssignmentExprType, Left: left, Right: right}
+	}
+
+	return left
 }
 
 func (p *Parser) parseAdditiveExpr() AST.Expr {
@@ -169,6 +181,7 @@ func (p *Parser) parsePrimaryExpr() AST.Expr {
 		return expr
 	default:
 		fmt.Println("Error: Invalid Token")
+		os.Exit(1)
 		return nil
 	}
 }

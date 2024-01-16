@@ -4,16 +4,8 @@
     "Constant": false,
     "Identifier": "x",
     "Value": {
-      "KindValue": "BinaryExpr",
-      "Left": {
-        "KindValue": "NumericLiteral",
-        "Value": 10
-      },
-      "Right": {
-        "KindValue": "NumericLiteral",
-        "Value": 5
-      },
-      "Operator": "+"
+      "KindValue": "NumericLiteral",
+      "Value": 10
     }
   }
 ]

@@ -13,4 +13,9 @@ func Eval_program(program AST.Program, env Environment) RuntimeVal {
 }
 
 func Eval_variable_declaration(variableDeclaration AST.VariableDeclaration, env Environment) RuntimeVal {
+	if variableDeclaration.Value == nil {
+		return MK_NULL()
+	}
+	value := Evaluate(variableDeclaration.Value, env)
+	return env.DeclareVar(variableDeclaration.Identifier, value, variableDeclaration.Constant)
 }

@@ -11,28 +11,20 @@ import (
 )
 
 func main() {
-	scanner := bufio.NewScanner(os.Stdin)
-
-	outputFile, OutputFileErr := os.Create("Ast.json")
 
 	fmt.Println(">> Welcome To Gor Language >:D")
 
+	//AST FILE
+	scanner := bufio.NewScanner(os.Stdin)
+	outputFile, OutputFileErr := os.Create("Ast.json")
+
 	// Environment Instance
-	parentEnv := ITR.NewEnvironment(nil)
-	env := ITR.NewEnvironment(parentEnv)
-
-	// Declare Variables
-	env.DeclareVar("a", ITR.MK_NUMBER(10))
-	env.DeclareVar("b", ITR.MK_NUMBER(20))
-	env.DeclareVar("null", ITR.MK_NULL())
-	env.DeclareVar("true", ITR.MK_BOOL(true))
-	env.DeclareVar("false", ITR.MK_BOOL(false))
-
+	env := ITR.EnviromentSetup()
 	// Parser Instance
 	parser := PSR.Parser{}
 
 	for {
-		fmt.Print(">> ")
+		fmt.Print("~> ")
 		scanner.Scan()
 		input := scanner.Text()
 
