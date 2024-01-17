@@ -6,6 +6,7 @@ const (
 	NullType   ValueType = "null"
 	NumberType ValueType = "number"
 	BoolType   ValueType = "bool"
+	ObjectType ValueType = "object"
 )
 
 type RuntimeVal interface {
@@ -37,6 +38,15 @@ type BoolVal struct {
 
 func (b BoolVal) Type() ValueType {
 	return b.TypeVal
+}
+
+type ObjectVal struct {
+	TypeVal    ValueType
+	Properties map[string]RuntimeVal
+}
+
+func (o ObjectVal) Type() ValueType {
+	return o.TypeVal
 }
 
 // Instant Make Function

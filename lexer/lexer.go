@@ -29,7 +29,13 @@ const (
 	Equals           // 3
 	OpenParenthesis  // 4
 	CloseParenthesis // 5
+	OpenBrace        // 5
+	CloseBrace       // 2
 	Colon            // 1
+	Comma            // 2
+	OpenBracket      // 2
+	CloseBracket     // 2
+	Dot              // 2
 	BinaryOperator   // 6
 
 	// Keywords
@@ -84,7 +90,7 @@ func isAlpha(s string) bool {
 
 // isSkippable check if the given character is useless
 func isSkippable(s string) bool {
-	return s == " " || s == "\t" || s == "\n"
+	return s == " " || s == "\t" || s == "\n" || s == "\r"
 }
 
 // Tokenize generates a slice of tokens from the given input string.
@@ -93,10 +99,6 @@ func Tokenize(inputToken string) []Token {
 	for i := 0; i < len(inputToken); i++ {
 
 		var t string = inputToken[i : i+1]
-
-		if t == " " || t == "\t" || t == "\n" {
-			continue
-		}
 
 		if t != "" {
 
@@ -111,6 +113,18 @@ func Tokenize(inputToken string) []Token {
 				tokens = append(tokens, token(t, CloseParenthesis))
 			case ":":
 				tokens = append(tokens, token(t, Colon))
+			case "{":
+				tokens = append(tokens, token(t, OpenBrace))
+			case "}":
+				tokens = append(tokens, token(t, CloseBrace))
+			case "[":
+				tokens = append(tokens, token(t, OpenBracket))
+			case "]":
+				tokens = append(tokens, token(t, CloseBracket))
+			case ".":
+				tokens = append(tokens, token(t, Dot))
+			case ",":
+				tokens = append(tokens, token(t, Comma))
 			default:
 				if isNumber(t) {
 					var number string = t
@@ -141,6 +155,7 @@ func Tokenize(inputToken string) []Token {
 				} else if isSkippable(t) {
 					continue
 				} else {
+					fmt.Println(">> Lexer Error >>")
 					fmt.Println("Unknown Token: ", t)
 				}
 			}

@@ -126,21 +126,61 @@ func (p *Parser) parseExpr() AST.Expr {
 }
 
 func (p *Parser) parseAssignmentExpr() AST.Expr {
-	left := p.parseAdditiveExpr()
+	left := p.parseOjbectExpr()
 
 	if p.peek().Type == LEX.Equals {
 		p.consume()
-		right := p.parseAdditiveExpr()
+		right := p.parseAssignmentExpr()
 		return AST.AssignmentExpr{KindValue: AST.AssignmentExprType, Left: left, Right: right}
 	}
 
 	return left
 }
 
+func (p *Parser) parseOjbectExpr() AST.Expr {
+
+	// NO OPEN BRAME
+
+	if p.peek().Type != LEX.OpenBrace {
+		return p.parseAdditiveExpr()
+	}
+
+	// OPEN BRACE
+	p.consume()
+	properties := []AST.Property{}
+
+	// { key }
+	for p.not_Eof() && p.peek().Type != LEX.CloseBrace {
+		key := p.expect(LEX.Identifier, "Error: Missing Identifier")
+
+		if p.peek().Type == LEX.Comma {
+			p.consume()
+			prop := AST.Property{KindValue: AST.PropertyType, Key: key.Value, Value: nil}
+			properties = append(properties, prop)
+			continue
+		} else if p.peek().Type == LEX.CloseBrace {
+			prop := AST.Property{KindValue: AST.PropertyType, Key: key.Value, Value: nil}
+			properties = append(properties, prop)
+			continue
+		} else if p.peek().Type == LEX.Colon {
+			p.consume()
+			value := p.parseExpr()
+			prop := AST.Property{KindValue: AST.PropertyType, Key: key.Value, Value: value}
+			properties = append(properties, prop)
+		}
+
+		if p.peek().Type != LEX.CloseBrace {
+			p.expect(LEX.Comma, "Error: Missing Comma")
+		}
+	}
+
+	p.expect(LEX.CloseBrace, "Error: Missing Closing Brace")
+
+	return AST.ObjectLiteral{KindValue: AST.OjectLiteralType, Properties: properties}
+}
+
 func (p *Parser) parseAdditiveExpr() AST.Expr {
 	left := p.parseMultiplicativeExpr()
-
-	// p.not_check([]LEX.TokenType{LEX.BinaryOperator, LEX.OpenParenthesis, LEX.CloseParenthesis, LEX.Identifier, LEX.Number}, "Error: Invalid Token")
 
 	for p.peek().Value == "+" || p.peek().Value == "-" {
 		op := p.consume().Value
@@ -152,17 +192,92 @@ func (p *Parser) parseAdditiveExpr() AST.Expr {
 }
 
 func (p *Parser) parseMultiplicativeExpr() AST.Expr {
-	left := p.parsePrimaryExpr()
-
-	// p.not_check([]LEX.TokenType{LEX.BinaryOperator, LEX.OpenParenthesis, LEX.CloseParenthesis, LEX.Identifier, LEX.Number}, "Error: Invalid Token")
+	left := p.parseCallMemberExpr()
 
 	for p.peek().Value == "*" || p.peek().Value == "/" || p.peek().Value == "%" {
 		op := p.consume().Value
-		right := p.parsePrimaryExpr()
+		right := p.parseCallMemberExpr()
 		left = AST.BinaryExpr{KindValue: "BinaryExpr", Operator: op, Left: left, Right: right}
 	}
 
 	return left
+}
+
+func (p *Parser) parseCallMemberExpr() AST.Expr {
+	member := p.parseMemberExpr()
+
+	if p.peek().Type == LEX.OpenParenthesis {
+		return p.parseCallExpr(member)
+	}
+	return member
+}
+
+func (p *Parser) parseCallExpr(caller AST.Expr) AST.Expr {
+	var call AST.Expr = AST.CallExpr{KindValue: "CallExpr", Caller: caller, Arguments: p.parseArguments()}
+
+	if p.peek().Type == LEX.OpenBrace {
+		call = p.parseCallExpr(call)
+	}
+	return call
+}
+
+func (p *Parser) parseArguments() []AST.Expr {
+
+	p.expect(LEX.OpenParenthesis, "Error: Missing Opening Parenthesis")
+
+	var arguments []AST.Expr = []AST.Expr{}
+
+	if p.peek().Type != LEX.CloseParenthesis {
+		arguments = p.parseArgumentsList()
+	}
+
+	p.expect(LEX.CloseParenthesis, "Error: Missing Closing Parenthesis")
+
+	return arguments
+}
+
+func (p *Parser) parseArgumentsList() []AST.Expr {
+	var args []AST.Expr = []AST.Expr{p.parseAssignmentExpr()}
+
+	for p.peek().Type == LEX.Comma {
+		p.consume()
+		args = append(args, p.parseAssignmentExpr())
+	}
+
+	return args
+}
+
+func (p *Parser) parseMemberExpr() AST.Expr {
+	var object AST.Expr = p.parsePrimaryExpr()
+
+	for p.peek().Type == LEX.Dot || p.peek().Type == LEX.OpenBracket {
+
+		operator := p.consume()
+		var property AST.Expr
+		var computed bool
+
+		if operator.Type == LEX.Dot {
+
+			property = p.parsePrimaryExpr()
+			computed = false
+
+			if property.Kind() != AST.IdentifierType {
+				fmt.Println("Error: Property must be an Identifier")
+				os.Exit(1)
+			}
+
+		}
+
+		if operator.Type == LEX.OpenBracket {
+			property = p.parseExpr()
+			computed = true
+			p.expect(LEX.CloseBracket, "Error: Missing Closing Bracket")
+		}
+
+		object = AST.MemberExpr{KindValue: "MemberExpr", Object: object, Property: property, Computed: computed}
+	}
+
+	return object
 }
 
 func (p *Parser) parsePrimaryExpr() AST.Expr {

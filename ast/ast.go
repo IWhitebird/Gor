@@ -13,6 +13,11 @@ const (
 
 	// Expressions
 	AssignmentExprType NodeType = "AssignmentExpr"
+	MemberExprType     NodeType = "MemberExpr"
+	CallExprType       NodeType = "CallExpr"
+	// Literals
+	OjectLiteralType   NodeType = "ObjectLiteral"
+	PropertyType       NodeType = "Property"
 	NumericLiteralType NodeType = "NumericLiteral"
 	IdentifierType     NodeType = "Identifier"
 	BinaryExprType     NodeType = "BinaryExpr"
@@ -110,6 +115,58 @@ func (n NumericLiteral) Kind() NodeType {
 	return n.KindValue
 }
 
-func Main() {
-	// fmt.Println(">> AST Running >>")
+/*
+ObjectLiteral represents an object literal inside the source code.
+*/
+
+type ObjectLiteral struct {
+	KindValue  NodeType
+	Properties []Property
+}
+
+func (o ObjectLiteral) Kind() NodeType {
+	return o.KindValue
+}
+
+/*
+Property represents a property inside an object literal.
+*/
+
+type Property struct {
+	KindValue NodeType
+	Key       string
+	Value     Expr
+}
+
+func (p Property) Kind() NodeType {
+	return p.KindValue
+}
+
+/*
+MemberExpr represents a member expression inside the source code.
+*/
+
+type MemberExpr struct {
+	KindValue NodeType
+	Object    Expr
+	Property  Expr
+	Computed  bool
+}
+
+func (m MemberExpr) Kind() NodeType {
+	return m.KindValue
+}
+
+/*
+CallExpr represents a function call inside the source code.
+*/
+
+type CallExpr struct {
+	KindValue NodeType
+	Caller    Expr
+	Arguments []Expr
+}
+
+func (c CallExpr) Kind() NodeType {
+	return c.KindValue
 }

@@ -65,16 +65,17 @@ func (env *Environment) Resolve(varname string) *Environment {
 }
 
 func EnviromentSetup() *Environment {
-	// Environment Instance
+	// Root Environment Instance
 	parentEnv := NewEnvironment(nil)
-	env := NewEnvironment(parentEnv)
-
 	// Declare Variables
-	env.DeclareVar("a", MK_NUMBER(10))
-	env.DeclareVar("b", MK_NUMBER(20))
-	env.DeclareVar("null", MK_NULL())
-	env.DeclareVar("true", MK_BOOL(true))
-	env.DeclareVar("false", MK_BOOL(false))
+	parentEnv.DeclareVar("a", MK_NUMBER(10))
+	parentEnv.DeclareVar("b", MK_NUMBER(20))
+	parentEnv.DeclareVar("null", MK_NULL())
+	parentEnv.DeclareVar("true", MK_BOOL(true))
+	parentEnv.DeclareVar("false", MK_BOOL(false))
+
+	// Environment Instance
+	env := NewEnvironment(parentEnv)
 
 	return env
 }

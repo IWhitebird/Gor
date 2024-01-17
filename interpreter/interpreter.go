@@ -13,6 +13,8 @@ func Evaluate(astNode AST.Stmt, env Environment) RuntimeVal {
 
 	case AST.NumericLiteralType:
 		return NumberVal{TypeVal: NumberType, Value: astNode.(AST.NumericLiteral).Value}
+	case AST.OjectLiteralType:
+		return Eval_object_expr(astNode.(AST.ObjectLiteral), env)
 	case AST.AssignmentExprType:
 		return Eval_assignment_expr(astNode.(AST.AssignmentExpr), env)
 	case AST.IdentifierType:

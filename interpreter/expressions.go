@@ -57,3 +57,17 @@ func Eval_assignment_expr(assignmentExpr AST.AssignmentExpr, env Environment) Ru
 
 	return env.AssignVar(varName, Evaluate(assignmentExpr.Right, env))
 }
+
+func Eval_object_expr(objectLiteral AST.ObjectLiteral, env Environment) RuntimeVal {
+	properties := make(map[string]RuntimeVal)
+
+	for _, property := range objectLiteral.Properties {
+		if property.Value == nil {
+			properties[property.Key] = env.LookupVar(property.Key)
+			continue
+		}
+		properties[property.Key] = Evaluate(property.Value, env)
+	}
+
+	return ObjectVal{TypeVal: ObjectType, Properties: properties}
+}

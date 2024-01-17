@@ -2,10 +2,34 @@
   {
     "KindValue": "VariableDeclaration",
     "Constant": false,
-    "Identifier": "x",
+    "Identifier": "obj",
     "Value": {
-      "KindValue": "NumericLiteral",
-      "Value": 10
+      "KindValue": "ObjectLiteral",
+      "Properties": [
+        {
+          "KindValue": "Property",
+          "Key": "a",
+          "Value": null
+        },
+        {
+          "KindValue": "Property",
+          "Key": "b",
+          "Value": null
+        }
+      ]
     }
+  }
+][
+  {
+    "KindValue": "MemberExpr",
+    "Object": {
+      "KindValue": "Identifier",
+      "Symbol": "obj"
+    },
+    "Property": {
+      "KindValue": "Identifier",
+      "Symbol": "a"
+    },
+    "Computed": true
   }
 ]
