@@ -3,10 +3,11 @@ package interpreter
 type ValueType string
 
 const (
-	NullType   ValueType = "null"
-	NumberType ValueType = "number"
-	BoolType   ValueType = "bool"
-	ObjectType ValueType = "object"
+	NullType       ValueType = "null"
+	NumberType     ValueType = "number"
+	BoolType       ValueType = "bool"
+	ObjectType     ValueType = "object"
+	NativeFuncType ValueType = "nativeFunc"
 )
 
 type RuntimeVal interface {
@@ -49,6 +50,17 @@ func (o ObjectVal) Type() ValueType {
 	return o.TypeVal
 }
 
+type FunctionCall func(args []RuntimeVal, env *Environment) RuntimeVal
+
+type NativeFuncVal struct {
+	TypeVal ValueType
+	Call    FunctionCall
+}
+
+func (n NativeFuncVal) Type() ValueType {
+	return n.TypeVal
+}
+
 // Instant Make Function
 
 func MK_NULL() NullVal {
@@ -87,5 +99,12 @@ func MK_BOOL(values ...bool) BoolVal {
 	return BoolVal{
 		TypeVal: "BoolType",
 		Value:   value,
+	}
+}
+
+func MK_NATIVE_FUNC(call FunctionCall) NativeFuncVal {
+	return NativeFuncVal{
+		TypeVal: NativeFuncType,
+		Call:    call,
 	}
 }

@@ -1,35 +1,19 @@
 [
   {
-    "KindValue": "VariableDeclaration",
-    "Constant": false,
-    "Identifier": "obj",
-    "Value": {
-      "KindValue": "ObjectLiteral",
-      "Properties": [
-        {
-          "KindValue": "Property",
-          "Key": "a",
-          "Value": null
-        },
-        {
-          "KindValue": "Property",
-          "Key": "b",
-          "Value": null
-        }
-      ]
-    }
-  }
-][
-  {
-    "KindValue": "MemberExpr",
-    "Object": {
+    "KindValue": "CallExpr",
+    "Caller": {
       "KindValue": "Identifier",
-      "Symbol": "obj"
+      "Symbol": "swap"
     },
-    "Property": {
-      "KindValue": "Identifier",
-      "Symbol": "a"
-    },
-    "Computed": true
+    "Arguments": [
+      {
+        "KindValue": "Identifier",
+        "Symbol": "a"
+      },
+      {
+        "KindValue": "Identifier",
+        "Symbol": "b"
+      }
+    ]
   }
-]
+][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]

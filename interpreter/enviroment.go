@@ -74,6 +74,22 @@ func EnviromentSetup() *Environment {
 	parentEnv.DeclareVar("true", MK_BOOL(true))
 	parentEnv.DeclareVar("false", MK_BOOL(false))
 
+	parentEnv.DeclareVar("print", MK_NATIVE_FUNC(func(args []RuntimeVal, env *Environment) RuntimeVal {
+		for _, arg := range args {
+			fmt.Println(arg)
+		}
+		return MK_NULL()
+	},
+	))
+
+	parentEnv.DeclareVar("swap", MK_NATIVE_FUNC(func(args []RuntimeVal, env *Environment) RuntimeVal {
+
+		fmt.Println(args)
+
+		return MK_NULL()
+	},
+	))
+
 	// Environment Instance
 	env := NewEnvironment(parentEnv)
 

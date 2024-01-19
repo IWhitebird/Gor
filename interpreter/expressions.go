@@ -39,7 +39,6 @@ func Eval_binary_expr_number(operator string, lhs RuntimeVal, rhs RuntimeVal) Ru
 	}
 
 	return NumberVal{TypeVal: NumberType, Value: value}
-
 }
 
 func Eval_identifier(identifier AST.Identifier, env Environment) RuntimeVal {
@@ -70,4 +69,24 @@ func Eval_object_expr(objectLiteral AST.ObjectLiteral, env Environment) RuntimeV
 	}
 
 	return ObjectVal{TypeVal: ObjectType, Properties: properties}
+}
+
+func Eval_call_expr(callExpr AST.CallExpr, env Environment) RuntimeVal {
+	var args []RuntimeVal
+
+	for _, arg := range callExpr.Arguments {
+		evaluatedArg := Evaluate(arg, env)
+		args = append(args, evaluatedArg)
+	}
+
+	var function = Evaluate(callExpr.Caller, env).(NativeFuncVal)
+
+	if function.Type() != NativeFuncType {
+		fmt.Println("Error: Not a function")
+		os.Exit(1)
+	}
+
+	result := function.Call(args, &env)
+
+	return result
 }

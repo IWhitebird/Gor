@@ -15,6 +15,7 @@ const (
 	AssignmentExprType NodeType = "AssignmentExpr"
 	MemberExprType     NodeType = "MemberExpr"
 	CallExprType       NodeType = "CallExpr"
+
 	// Literals
 	OjectLiteralType   NodeType = "ObjectLiteral"
 	PropertyType       NodeType = "Property"
