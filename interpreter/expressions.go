@@ -79,14 +79,33 @@ func Eval_call_expr(callExpr AST.CallExpr, env Environment) RuntimeVal {
 		args = append(args, evaluatedArg)
 	}
 
-	var function = Evaluate(callExpr.Caller, env).(NativeFuncVal)
+	caller := Evaluate(callExpr.Caller, env)
 
-	if function.Type() != NativeFuncType {
-		fmt.Println("Error: Not a function")
-		os.Exit(1)
+	switch caller := caller.(type) {
+	case NativeFuncVal:
+		if caller.Type() == NativeFuncType {
+			result := caller.Call(args, &env)
+			return result
+		}
+
+	case FunctionVal:
+		scope := NewEnvironment(&env)
+
+		if len(caller.Parameters) != len(args) {
+			return MK_NULL()
+		}
+
+		for i, param := range caller.Parameters {
+			scope.DeclareVar(param, args[i], false)
+		}
+
+		var result RuntimeVal = MK_NULL()
+
+		for _, statement := range caller.Body.Body {
+			result = Evaluate(statement, *scope)
+		}
+
+		return result
 	}
-
-	result := function.Call(args, &env)
-
-	return result
+	return MK_NULL()
 }

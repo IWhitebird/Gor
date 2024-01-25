@@ -1,8 +1,5 @@
+fn add (x, y)  {
+    x + y 
+}
 
-
-let obj = {
-    x : 17,
-    a
-}:
-
-obj.x()
+add(255 , 3)

@@ -1,19 +1,44 @@
 [
   {
+    "KindValue": "FunctionDeclaration",
+    "Identifier": "add",
+    "Parameters": [
+      "x",
+      "y"
+    ],
+    "Body": {
+      "KindValue": "BlockStmt",
+      "Body": [
+        {
+          "KindValue": "BinaryExpr",
+          "Left": {
+            "KindValue": "Identifier",
+            "Symbol": "x"
+          },
+          "Right": {
+            "KindValue": "Identifier",
+            "Symbol": "y"
+          },
+          "Operator": "+"
+        }
+      ]
+    }
+  },
+  {
     "KindValue": "CallExpr",
     "Caller": {
       "KindValue": "Identifier",
-      "Symbol": "swap"
+      "Symbol": "add"
     },
     "Arguments": [
       {
-        "KindValue": "Identifier",
-        "Symbol": "a"
+        "KindValue": "NumericLiteral",
+        "Value": 255
       },
       {
-        "KindValue": "Identifier",
-        "Symbol": "b"
+        "KindValue": "NumericLiteral",
+        "Value": 3
       }
     ]
   }
-][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
+]

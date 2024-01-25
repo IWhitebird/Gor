@@ -79,9 +79,45 @@ func (p *Parser) parseStmt() AST.Stmt {
 		return p.parseVariableDeclaration()
 	case LEX.Const:
 		return p.parseVariableDeclaration()
+	case LEX.Function:
+		return p.paeseFunctionDeclaration()
 	default:
 		return p.parseExpr()
 	}
+}
+
+func (p *Parser) paeseFunctionDeclaration() AST.Stmt {
+	p.consume()
+	p.expect(LEX.Identifier, "Error: Missing Identifier")
+
+	args := p.parseArguments()
+	params := []string{}
+
+	for _, arg := range args {
+		if arg.Kind() != AST.IdentifierType {
+			fmt.Println("Error: Function Parameters must be Identifiers")
+			os.Exit(1)
+		}
+		params = append(params, arg.(AST.Identifier).Symbol)
+	}
+
+	body := p.parseBlockStmt()
+
+	return AST.FunctionDeclaration{KindValue: AST.FunctionDeclarationType, Identifier: p.peek().Value, Parameters: params, Body: body.(AST.BlockStmt)}
+}
+
+func (p *Parser) parseBlockStmt() AST.Stmt {
+	p.expect(LEX.OpenBrace, "Error: Missing Opening Brace")
+
+	var body []AST.Stmt = []AST.Stmt{}
+
+	for p.not_Eof() && p.peek().Type != LEX.CloseBrace {
+		body = append(body, p.parseStmt())
+	}
+
+	p.expect(LEX.CloseBrace, "Error: Missing Closing Brace")
+
+	return AST.BlockStmt{KindValue: AST.BlockStmtType, Body: body}
 }
 
 func (p *Parser) parseVariableDeclaration() AST.Stmt {

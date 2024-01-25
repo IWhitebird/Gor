@@ -39,11 +39,12 @@ const (
 	BinaryOperator   // 6
 
 	// Keywords
-	Let    // 7
-	Const  // 11
-	If     // 8
-	Else   // 9
-	Return // 10
+	Let      // 7
+	Const    // 11
+	Function //12
+	If       // 8
+	Else     // 9
+	Return   // 10
 
 	// End of File
 	EOF // 11
@@ -51,19 +52,24 @@ const (
 
 // KEYWORDS maps keyword strings to their corresponding token types.
 const (
-	letStr    = "let"
+	//Variable Declares
+	letStr   = "let"
+	constStr = "const"
+
+	//Function Declaration
+	fnStr     = "fn"
 	ifStr     = "if"
 	elseStr   = "else"
 	returnStr = "return"
-	constStr  = "const"
 )
 
 var KEYWORDS = map[string]TokenType{
 	letStr:    Let,
+	constStr:  Const,
+	fnStr:     Function,
 	ifStr:     If,
 	elseStr:   Else,
 	returnStr: Return,
-	constStr:  Const,
 }
 
 // Token represents a lexical token with a type and a value.

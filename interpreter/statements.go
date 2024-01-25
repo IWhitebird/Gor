@@ -19,3 +19,16 @@ func Eval_variable_declaration(variableDeclaration AST.VariableDeclaration, env 
 	value := Evaluate(variableDeclaration.Value, env)
 	return env.DeclareVar(variableDeclaration.Identifier, value, variableDeclaration.Constant)
 }
+
+func Eval_function_declaration(functionDeclaration AST.FunctionDeclaration, env Environment) RuntimeVal {
+
+	function := FunctionVal{
+		TypeVal:    FunctionType,
+		Name:       functionDeclaration.Identifier,
+		Parameters: functionDeclaration.Parameters,
+		Body:       functionDeclaration.Body,
+		Env:        env,
+	}
+
+	return env.DeclareVar(functionDeclaration.Identifier, function, false)
+}

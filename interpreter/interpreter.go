@@ -30,6 +30,8 @@ func Evaluate(astNode AST.Stmt, env Environment) RuntimeVal {
 		return Eval_program(astNode.(AST.Program), env)
 	case AST.VariableDeclarationType:
 		return Eval_variable_declaration(astNode.(AST.VariableDeclaration), env)
+	case AST.FunctionDeclarationType:
+		return Eval_function_declaration(astNode.(AST.FunctionDeclaration), env)
 
 	// Default
 	default:

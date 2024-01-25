@@ -10,7 +10,7 @@ const (
 	// Statements
 	ProgramType             NodeType = "Program"
 	VariableDeclarationType NodeType = "VariableDeclaration"
-
+	FunctionDeclarationType NodeType = "FunctionDeclaration"
 	// Expressions
 	AssignmentExprType NodeType = "AssignmentExpr"
 	MemberExprType     NodeType = "MemberExpr"
@@ -22,6 +22,7 @@ const (
 	NumericLiteralType NodeType = "NumericLiteral"
 	IdentifierType     NodeType = "Identifier"
 	BinaryExprType     NodeType = "BinaryExpr"
+	BlockStmtType      NodeType = "BlockStmt"
 )
 
 /*
@@ -55,6 +56,33 @@ type VariableDeclaration struct {
 
 func (v VariableDeclaration) Kind() NodeType {
 	return v.KindValue
+}
+
+/*
+FunctionDeclaration represents a function declaration in the source.
+*/
+
+type FunctionDeclaration struct {
+	KindValue  NodeType
+	Identifier string
+	Parameters []string
+	Body       BlockStmt
+}
+
+func (f FunctionDeclaration) Kind() NodeType {
+	return f.KindValue
+}
+
+/*
+BlockStmt represents a block statement in the source.
+*/
+type BlockStmt struct {
+	KindValue NodeType
+	Body      []Stmt
+}
+
+func (b BlockStmt) Kind() NodeType {
+	return b.KindValue
 }
 
 /*

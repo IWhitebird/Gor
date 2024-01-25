@@ -1,5 +1,9 @@
 package interpreter
 
+import (
+	AST "Gor/ast"
+)
+
 type ValueType string
 
 const (
@@ -8,6 +12,7 @@ const (
 	BoolType       ValueType = "bool"
 	ObjectType     ValueType = "object"
 	NativeFuncType ValueType = "nativeFunc"
+	FunctionType   ValueType = "function"
 )
 
 type RuntimeVal interface {
@@ -61,6 +66,18 @@ func (n NativeFuncVal) Type() ValueType {
 	return n.TypeVal
 }
 
+type FunctionVal struct {
+	TypeVal    ValueType
+	Name       string
+	Parameters []string
+	Body       AST.BlockStmt
+	Env        Environment
+}
+
+func (f FunctionVal) Type() ValueType {
+	return f.TypeVal
+}
+
 // Instant Make Function
 
 func MK_NULL() NullVal {
@@ -107,4 +124,20 @@ func MK_NATIVE_FUNC(call FunctionCall) NativeFuncVal {
 		TypeVal: NativeFuncType,
 		Call:    call,
 	}
+}
+
+func RuntimeVal_Wrapper(val RuntimeVal) interface{} {
+	switch val.Type() {
+	case NullType:
+		return "null"
+	case NumberType:
+		return val.(NumberVal).Value
+	case BoolType:
+		return val.(BoolVal).Value
+	case ObjectType:
+		return val.(ObjectVal).Properties
+	}
+
+	// Return a default value in case the type is not recognized
+	return nil
 }
