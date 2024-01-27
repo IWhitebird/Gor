@@ -76,7 +76,14 @@ func EnviromentSetup() *Environment {
 
 	parentEnv.DeclareVar("print", MK_NATIVE_FUNC(func(args []RuntimeVal, env *Environment) RuntimeVal {
 		for _, arg := range args {
-			fmt.Println(arg)
+			if arg.Type() == NumberType {
+				return MK_NUMBER(arg.(NumberVal).Value)
+			} else if arg.Type() == BoolType {
+				return MK_BOOL(arg.(BoolVal).Value)
+			} else if arg.Type() == StringType {
+				return MK_STRING(arg.(StringVal).Value)
+			}
+
 		}
 		return MK_NULL()
 	},

@@ -18,15 +18,24 @@
     }
   },
   {
-    "KindValue": "BinaryExpr",
-    "Left": {
+    "KindValue": "CallExpr",
+    "Caller": {
       "KindValue": "Identifier",
-      "Symbol": "x"
+      "Symbol": "print"
     },
-    "Right": {
-      "KindValue": "Identifier",
-      "Symbol": "y"
-    },
-    "Operator": "+"
+    "Arguments": [
+      {
+        "KindValue": "BinaryExpr",
+        "Left": {
+          "KindValue": "Identifier",
+          "Symbol": "x"
+        },
+        "Right": {
+          "KindValue": "Identifier",
+          "Symbol": "y"
+        },
+        "Operator": "+"
+      }
+    ]
   }
 ]
