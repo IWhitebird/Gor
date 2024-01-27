@@ -19,26 +19,36 @@ func Eval_binary_expr(binaryExpr AST.BinaryExpr, env Environment) RuntimeVal {
 
 func Eval_binary_expr_number(operator string, lhs RuntimeVal, rhs RuntimeVal) RuntimeVal {
 
-	var value int
-
 	switch operator {
 	case "+":
-		value = lhs.(NumberVal).Value + rhs.(NumberVal).Value
+		return MK_NUMBER(lhs.(NumberVal).Value + rhs.(NumberVal).Value)
 	case "-":
-		value = lhs.(NumberVal).Value - rhs.(NumberVal).Value
+		return MK_NUMBER(lhs.(NumberVal).Value - rhs.(NumberVal).Value)
 	case "*":
-		value = lhs.(NumberVal).Value * rhs.(NumberVal).Value
+		return MK_NUMBER(lhs.(NumberVal).Value * rhs.(NumberVal).Value)
 	case "/":
-		if rhs.(NumberVal).Value == 0 {
-			fmt.Println("Error : Division by zero")
-			os.Exit(1)
-		}
-		value = lhs.(NumberVal).Value / rhs.(NumberVal).Value
+		return MK_NUMBER(lhs.(NumberVal).Value / rhs.(NumberVal).Value)
 	case "%":
-		value = lhs.(NumberVal).Value % rhs.(NumberVal).Value
+		return MK_NUMBER(lhs.(NumberVal).Value % rhs.(NumberVal).Value)
+	case "&":
+		return MK_BOOL(lhs.(BoolVal).Value && rhs.(BoolVal).Value)
+	case "|":
+		return MK_BOOL(lhs.(BoolVal).Value || rhs.(BoolVal).Value)
+	case "==":
+		return MK_BOOL(lhs.(NumberVal).Value == rhs.(NumberVal).Value)
+	case "!=":
+		return MK_BOOL(lhs.(NumberVal).Value != rhs.(NumberVal).Value)
+	case ">":
+		return MK_BOOL(lhs.(NumberVal).Value > rhs.(NumberVal).Value)
+	case "<":
+		return MK_BOOL(lhs.(NumberVal).Value < rhs.(NumberVal).Value)
+	case ">=":
+		return MK_BOOL(lhs.(NumberVal).Value >= rhs.(NumberVal).Value)
+	case "<=":
+		return MK_BOOL(lhs.(NumberVal).Value <= rhs.(NumberVal).Value)
 	}
 
-	return NumberVal{TypeVal: NumberType, Value: value}
+	return MK_NULL()
 }
 
 func Eval_identifier(identifier AST.Identifier, env Environment) RuntimeVal {
@@ -101,7 +111,7 @@ func Eval_call_expr(callExpr AST.CallExpr, env Environment) RuntimeVal {
 
 		var result RuntimeVal = MK_NULL()
 
-		for _, statement := range caller.Body.Body {
+		for _, statement := range caller.Body {
 			result = Evaluate(statement, *scope)
 		}
 

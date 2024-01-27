@@ -73,20 +73,71 @@ func (p *Parser) parseInt(str string) int {
 }
 
 func (p *Parser) parseStmt() AST.Stmt {
-
 	switch p.peek().Type {
 	case LEX.Let:
 		return p.parseVariableDeclaration()
 	case LEX.Const:
 		return p.parseVariableDeclaration()
 	case LEX.Function:
-		return p.paeseFunctionDeclaration()
+		return p.parseFunctionDeclaration()
+	case LEX.If:
+		return p.parseIfStatement()
+	case LEX.For:
+		return p.parseForStatement()
 	default:
 		return p.parseExpr()
 	}
 }
 
-func (p *Parser) paeseFunctionDeclaration() AST.Stmt {
+func (p *Parser) parseIfStatement() AST.Stmt {
+	p.consume()
+
+	p.expect(LEX.OpenParenthesis, "Error Missing Opening Parenthesis")
+
+	left_expr := p.parseExpr()
+
+	p.expect(LEX.CloseParenthesis, "Error Missing Closing Parenthesis")
+
+	body := p.parseBlockStmt()
+
+	alternate := []AST.Stmt{}
+
+	if p.peek().Type == LEX.Else {
+		p.consume()
+
+		if p.peek().Type == LEX.If {
+			alternate = append(alternate, p.parseIfStatement())
+		} else {
+			alternate = p.parseBlockStmt()
+		}
+	}
+
+	return AST.IfStmt{KindValue: AST.IfStmtType, Test: left_expr, Body: body, Alternate: alternate}
+
+}
+
+func (p *Parser) parseForStatement() AST.Stmt {
+	p.consume()
+	p.expect(LEX.OpenParenthesis, "Error Missing Opening Parenthesis")
+
+	init := p.parseVariableDeclaration()
+
+	p.expect(LEX.SemiColon, "Error Missing Semicolon")
+
+	test := p.parseExpr()
+
+	p.expect(LEX.SemiColon, "Error Missing Semicolon")
+
+	update := p.parseExpr()
+
+	p.expect(LEX.CloseParenthesis, "Error Missing Closing Parenthesis")
+
+	body := p.parseBlockStmt()
+
+	return AST.ForStmt{KindValue: AST.ForStmtType, Init: init, Test: test, Update: update, Body: body}
+}
+
+func (p *Parser) parseFunctionDeclaration() AST.Stmt {
 	p.consume()
 	p.expect(LEX.Identifier, "Error: Missing Identifier")
 
@@ -103,10 +154,10 @@ func (p *Parser) paeseFunctionDeclaration() AST.Stmt {
 
 	body := p.parseBlockStmt()
 
-	return AST.FunctionDeclaration{KindValue: AST.FunctionDeclarationType, Identifier: p.peek().Value, Parameters: params, Body: body.(AST.BlockStmt)}
+	return AST.FunctionDeclaration{KindValue: AST.FunctionDeclarationType, Identifier: p.peek().Value, Parameters: params, Body: body}
 }
 
-func (p *Parser) parseBlockStmt() AST.Stmt {
+func (p *Parser) parseBlockStmt() []AST.Stmt {
 	p.expect(LEX.OpenBrace, "Error: Missing Opening Brace")
 
 	var body []AST.Stmt = []AST.Stmt{}
@@ -117,7 +168,7 @@ func (p *Parser) parseBlockStmt() AST.Stmt {
 
 	p.expect(LEX.CloseBrace, "Error: Missing Closing Brace")
 
-	return AST.BlockStmt{KindValue: AST.BlockStmtType, Body: body}
+	return body
 }
 
 func (p *Parser) parseVariableDeclaration() AST.Stmt {
@@ -127,8 +178,7 @@ func (p *Parser) parseVariableDeclaration() AST.Stmt {
 
 	isIdentifier := p.expect(LEX.Identifier, "Error: Missing Identifier")
 
-	if p.peek().Type == LEX.Colon {
-		p.consume()
+	if p.peek().Type != LEX.Equals {
 
 		if isConst {
 			fmt.Println("Error: Const Variable Declaration cannot be without a value")
@@ -151,8 +201,6 @@ func (p *Parser) parseVariableDeclaration() AST.Stmt {
 		Value:      p.parseExpr(),
 	}
 
-	p.expect(LEX.Colon, "Error: Missing Colon")
-
 	return dec
 
 }
@@ -173,12 +221,23 @@ func (p *Parser) parseAssignmentExpr() AST.Expr {
 	return left
 }
 
+func (p *Parser) parseAndStatement() AST.Expr {
+	left := p.parseAdditiveExpr()
+
+	if p.peek().Value == "&&" || p.peek().Value == "||" {
+		op := p.consume().Value
+		right := p.parseAdditiveExpr()
+		left = AST.BinaryExpr{KindValue: "BinaryExpr", Operator: op, Left: left, Right: right}
+	}
+	return left
+}
+
 func (p *Parser) parseOjbectExpr() AST.Expr {
 
 	// NO OPEN BRAME
 
 	if p.peek().Type != LEX.OpenBrace {
-		return p.parseAdditiveExpr()
+		return p.parseAndStatement()
 	}
 
 	// OPEN BRACE
@@ -218,7 +277,7 @@ func (p *Parser) parseOjbectExpr() AST.Expr {
 func (p *Parser) parseAdditiveExpr() AST.Expr {
 	left := p.parseMultiplicativeExpr()
 
-	for p.peek().Value == "+" || p.peek().Value == "-" {
+	for p.peek().Value == "+" || p.peek().Value == "-" || p.peek().Value == "==" || p.peek().Value == "!=" || p.peek().Value == "<" || p.peek().Value == ">" || p.peek().Value == "<=" || p.peek().Value == ">=" {
 		op := p.consume().Value
 		right := p.parseMultiplicativeExpr()
 		left = AST.BinaryExpr{KindValue: "BinaryExpr", Operator: op, Left: left, Right: right}
@@ -325,6 +384,8 @@ func (p *Parser) parsePrimaryExpr() AST.Expr {
 		return AST.Identifier{KindValue: "Identifier", Symbol: p.consume().Value}
 	case LEX.Number:
 		return AST.NumericLiteral{KindValue: "NumericLiteral", Value: p.parseInt(p.consume().Value)}
+	case LEX.String:
+		return AST.StringLiteral{KindValue: "StringLiteral", Value: p.consume().Value}
 	case LEX.OpenParenthesis:
 		p.consume()
 		expr := p.parseExpr()
@@ -335,8 +396,4 @@ func (p *Parser) parsePrimaryExpr() AST.Expr {
 		os.Exit(1)
 		return nil
 	}
-}
-
-func Main() {
-	// fmt.Println(">> Parser Running >>")
 }

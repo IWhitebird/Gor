@@ -9,6 +9,7 @@ type ValueType string
 const (
 	NullType       ValueType = "null"
 	NumberType     ValueType = "number"
+	StringType     ValueType = "string"
 	BoolType       ValueType = "bool"
 	ObjectType     ValueType = "object"
 	NativeFuncType ValueType = "nativeFunc"
@@ -35,6 +36,15 @@ type NumberVal struct {
 
 func (n NumberVal) Type() ValueType {
 	return n.TypeVal
+}
+
+type StringVal struct {
+	TypeVal ValueType
+	Value   string
+}
+
+func (s StringVal) Type() ValueType {
+	return s.TypeVal
 }
 
 type BoolVal struct {
@@ -70,7 +80,7 @@ type FunctionVal struct {
 	TypeVal    ValueType
 	Name       string
 	Parameters []string
-	Body       AST.BlockStmt
+	Body       []AST.Stmt
 	Env        Environment
 }
 
@@ -103,6 +113,22 @@ func MK_NUMBER(values ...int) NumberVal {
 	}
 }
 
+func MK_STRING(values ...string) StringVal {
+	var value string
+
+	if len(values) > 0 {
+		value = values[0]
+	} else {
+		// Default value if not provided
+		value = ""
+	}
+
+	return StringVal{
+		TypeVal: StringType,
+		Value:   value,
+	}
+}
+
 func MK_BOOL(values ...bool) BoolVal {
 	var value bool
 
@@ -119,6 +145,22 @@ func MK_BOOL(values ...bool) BoolVal {
 	}
 }
 
+func MK_OBJECT(properties ...map[string]RuntimeVal) ObjectVal {
+	var value map[string]RuntimeVal
+
+	if len(properties) > 0 {
+		value = properties[0]
+	} else {
+		// Default value if not provided
+		value = make(map[string]RuntimeVal)
+	}
+
+	return ObjectVal{
+		TypeVal:    ObjectType,
+		Properties: value,
+	}
+}
+
 func MK_NATIVE_FUNC(call FunctionCall) NativeFuncVal {
 	return NativeFuncVal{
 		TypeVal: NativeFuncType,
@@ -132,6 +174,8 @@ func RuntimeVal_Wrapper(val RuntimeVal) interface{} {
 		return "null"
 	case NumberType:
 		return val.(NumberVal).Value
+	case StringType:
+		return val.(StringVal).Value
 	case BoolType:
 		return val.(BoolVal).Value
 	case ObjectType:

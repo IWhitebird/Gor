@@ -20,9 +20,12 @@ const (
 	OjectLiteralType   NodeType = "ObjectLiteral"
 	PropertyType       NodeType = "Property"
 	NumericLiteralType NodeType = "NumericLiteral"
+	StringLiteralType  NodeType = "StringLiteral"
 	IdentifierType     NodeType = "Identifier"
 	BinaryExprType     NodeType = "BinaryExpr"
 	BlockStmtType      NodeType = "BlockStmt"
+	IfStmtType         NodeType = "IfStmt"
+	ForStmtType        NodeType = "ForStmt"
 )
 
 /*
@@ -66,7 +69,7 @@ type FunctionDeclaration struct {
 	KindValue  NodeType
 	Identifier string
 	Parameters []string
-	Body       BlockStmt
+	Body       []Stmt
 }
 
 func (f FunctionDeclaration) Kind() NodeType {
@@ -74,15 +77,33 @@ func (f FunctionDeclaration) Kind() NodeType {
 }
 
 /*
-BlockStmt represents a block statement in the source.
+IfStmt represents an if statement in the source.
 */
-type BlockStmt struct {
+type IfStmt struct {
 	KindValue NodeType
+	Test      Expr
+	Body      []Stmt
+	Alternate []Stmt
+}
+
+func (i IfStmt) Kind() NodeType {
+	return i.KindValue
+}
+
+/*
+ForStmt represents a for statement in the source.
+*/
+
+type ForStmt struct {
+	KindValue NodeType
+	Init      Expr
+	Test      Expr
+	Update    Expr
 	Body      []Stmt
 }
 
-func (b BlockStmt) Kind() NodeType {
-	return b.KindValue
+func (f ForStmt) Kind() NodeType {
+	return f.KindValue
 }
 
 /*
@@ -142,6 +163,18 @@ type NumericLiteral struct {
 
 func (n NumericLiteral) Kind() NodeType {
 	return n.KindValue
+}
+
+/*
+StringLiteral represents a string constant inside the source code.
+*/
+type StringLiteral struct {
+	KindValue NodeType
+	Value     string
+}
+
+func (s StringLiteral) Kind() NodeType {
+	return s.KindValue
 }
 
 /*

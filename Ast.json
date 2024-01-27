@@ -1,44 +1,32 @@
 [
   {
-    "KindValue": "FunctionDeclaration",
-    "Identifier": "add",
-    "Parameters": [
-      "x",
-      "y"
-    ],
-    "Body": {
-      "KindValue": "BlockStmt",
-      "Body": [
-        {
-          "KindValue": "BinaryExpr",
-          "Left": {
-            "KindValue": "Identifier",
-            "Symbol": "x"
-          },
-          "Right": {
-            "KindValue": "Identifier",
-            "Symbol": "y"
-          },
-          "Operator": "+"
-        }
-      ]
+    "KindValue": "VariableDeclaration",
+    "Constant": false,
+    "Identifier": "x",
+    "Value": {
+      "KindValue": "NumericLiteral",
+      "Value": 10
     }
   },
   {
-    "KindValue": "CallExpr",
-    "Caller": {
+    "KindValue": "VariableDeclaration",
+    "Constant": false,
+    "Identifier": "y",
+    "Value": {
+      "KindValue": "NumericLiteral",
+      "Value": 15
+    }
+  },
+  {
+    "KindValue": "BinaryExpr",
+    "Left": {
       "KindValue": "Identifier",
-      "Symbol": "add"
+      "Symbol": "x"
     },
-    "Arguments": [
-      {
-        "KindValue": "NumericLiteral",
-        "Value": 255
-      },
-      {
-        "KindValue": "NumericLiteral",
-        "Value": 3
-      }
-    ]
+    "Right": {
+      "KindValue": "Identifier",
+      "Symbol": "y"
+    },
+    "Operator": "+"
   }
 ]

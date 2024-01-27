@@ -21,33 +21,49 @@ type TokenType int
 const (
 
 	// Litreals
-	Number     TokenType = iota // 0
-	Identifier                  // 2
+	Number TokenType = iota
 	String
+	Identifier
 
 	// Operators
-	Equals           // 3
-	OpenParenthesis  // 4
-	CloseParenthesis // 5
-	OpenBrace        // 5
-	CloseBrace       // 2
-	Colon            // 1
-	Comma            // 2
-	OpenBracket      // 2
-	CloseBracket     // 2
-	Dot              // 2
-	BinaryOperator   // 6
+	Equals
+	OpenParenthesis
+	CloseParenthesis
+	OpenBrace
+	CloseBrace
+	Colon
+	SemiColon
+	Comma
+	OpenBracket
+	CloseBracket
+	Dot
+	BinaryOperator
+
+	Quote
+	Greater
+	Lesser
+	EqualsOperator
+	NotEqualsOperator
+	OrOperator
+	AndOperator
+	GreaterOrEqual
+	LesserOrEqual
+
+	Ampersand
+	Exclamation
+	Bar
 
 	// Keywords
-	Let      // 7
-	Const    // 11
-	Function //12
-	If       // 8
-	Else     // 9
-	Return   // 10
+	Let
+	Const
+	Function
+	If
+	Else
+	Return
+	For
 
 	// End of File
-	EOF // 11
+	EOF
 )
 
 // KEYWORDS maps keyword strings to their corresponding token types.
@@ -61,6 +77,7 @@ const (
 	ifStr     = "if"
 	elseStr   = "else"
 	returnStr = "return"
+	forStr    = "for"
 )
 
 var KEYWORDS = map[string]TokenType{
@@ -70,6 +87,7 @@ var KEYWORDS = map[string]TokenType{
 	ifStr:     If,
 	elseStr:   Else,
 	returnStr: Return,
+	forStr:    For,
 }
 
 // Token represents a lexical token with a type and a value.
@@ -110,7 +128,12 @@ func Tokenize(inputToken string) []Token {
 
 			switch t {
 			case "=":
-				tokens = append(tokens, token(t, Equals))
+				if inputToken[i+1:i+2] == "=" {
+					tokens = append(tokens, token("==", EqualsOperator))
+					i++
+				} else {
+					tokens = append(tokens, token(t, Equals))
+				}
 			case "+", "-", "*", "/", "%":
 				tokens = append(tokens, token(t, BinaryOperator))
 			case "(":
@@ -119,6 +142,8 @@ func Tokenize(inputToken string) []Token {
 				tokens = append(tokens, token(t, CloseParenthesis))
 			case ":":
 				tokens = append(tokens, token(t, Colon))
+			case ";":
+				tokens = append(tokens, token(t, SemiColon))
 			case "{":
 				tokens = append(tokens, token(t, OpenBrace))
 			case "}":
@@ -131,6 +156,49 @@ func Tokenize(inputToken string) []Token {
 				tokens = append(tokens, token(t, Dot))
 			case ",":
 				tokens = append(tokens, token(t, Comma))
+			case "!":
+				if inputToken[i+1:i+2] == "=" {
+					tokens = append(tokens, token("!=", NotEqualsOperator))
+					i++
+				} else {
+					tokens = append(tokens, token(t, Exclamation))
+				}
+			case ">":
+				if inputToken[i+1:i+2] == "=" {
+					tokens = append(tokens, token(">=", GreaterOrEqual))
+					i++
+				} else {
+					tokens = append(tokens, token(t, Greater))
+				}
+			case "<":
+				if inputToken[i+1:i+2] == "=" {
+					tokens = append(tokens, token("<=", LesserOrEqual))
+					i++
+				} else {
+					tokens = append(tokens, token(t, Lesser))
+				}
+			case "&":
+				if inputToken[i+1:i+2] == "&" {
+					tokens = append(tokens, token("&&", AndOperator))
+					i++
+				} else {
+					tokens = append(tokens, token(t, Ampersand))
+				}
+			case "|":
+				if inputToken[i+1:i+2] == "|" {
+					tokens = append(tokens, token("||", OrOperator))
+					i++
+				} else {
+					tokens = append(tokens, token(t, Bar))
+				}
+			case "\"":
+				var stringLiteral string = ""
+				for j := i + 1; j < len(inputToken) && inputToken[j:j+1] != "\""; j++ {
+					stringLiteral += inputToken[j : j+1]
+					i++
+				}
+				tokens = append(tokens, token(stringLiteral, String))
+				i++
 			default:
 				if isNumber(t) {
 					var number string = t
