@@ -45,13 +45,13 @@ func Eval_equals(lhs RuntimeVal, rhs RuntimeVal, operator string) RuntimeVal {
 			return MK_BOOL(lhs.(BoolVal).Value != rhs.(BoolVal).Value)
 		case ">=":
 			var lef int
-			if lhs.(BoolVal).Value == true {
+			if lhs.(BoolVal).Value {
 				lef = 1
 			} else {
 				lef = 0
 			}
 			var rig int
-			if rhs.(BoolVal).Value == true {
+			if rhs.(BoolVal).Value {
 				rig = 1
 			} else {
 				rig = 0
@@ -59,13 +59,13 @@ func Eval_equals(lhs RuntimeVal, rhs RuntimeVal, operator string) RuntimeVal {
 			return MK_BOOL(lef >= rig)
 		case "<=":
 			var lef int
-			if lhs.(BoolVal).Value == true {
+			if lhs.(BoolVal).Value {
 				lef = 1
 			} else {
 				lef = 0
 			}
 			var rig int
-			if rhs.(BoolVal).Value == true {
+			if rhs.(BoolVal).Value {
 				rig = 1
 			} else {
 				rig = 0
