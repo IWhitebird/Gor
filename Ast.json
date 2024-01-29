@@ -2,20 +2,75 @@
   {
     "KindValue": "VariableDeclaration",
     "Constant": false,
-    "Identifier": "x",
+    "Identifier": "yol",
     "Value": {
       "KindValue": "NumericLiteral",
-      "Value": 10
+      "Value": 0
     }
   },
   {
-    "KindValue": "VariableDeclaration",
-    "Constant": false,
-    "Identifier": "y",
-    "Value": {
-      "KindValue": "NumericLiteral",
-      "Value": 15
-    }
+    "KindValue": "ForStmt",
+    "Init": {
+      "KindValue": "VariableDeclaration",
+      "Constant": false,
+      "Identifier": "i",
+      "Value": {
+        "KindValue": "NumericLiteral",
+        "Value": 0
+      }
+    },
+    "Test": {
+      "KindValue": "BinaryExpr",
+      "Left": {
+        "KindValue": "Identifier",
+        "Symbol": "i"
+      },
+      "Right": {
+        "KindValue": "NumericLiteral",
+        "Value": 10
+      },
+      "Operator": "\u003c"
+    },
+    "Update": {
+      "KindValue": "AssignmentExpr",
+      "Left": {
+        "KindValue": "Identifier",
+        "Symbol": "i"
+      },
+      "Right": {
+        "KindValue": "BinaryExpr",
+        "Left": {
+          "KindValue": "Identifier",
+          "Symbol": "i"
+        },
+        "Right": {
+          "KindValue": "NumericLiteral",
+          "Value": 1
+        },
+        "Operator": "+"
+      }
+    },
+    "Body": [
+      {
+        "KindValue": "AssignmentExpr",
+        "Left": {
+          "KindValue": "Identifier",
+          "Symbol": "yol"
+        },
+        "Right": {
+          "KindValue": "BinaryExpr",
+          "Left": {
+            "KindValue": "Identifier",
+            "Symbol": "yol"
+          },
+          "Right": {
+            "KindValue": "Identifier",
+            "Symbol": "i"
+          },
+          "Operator": "+"
+        }
+      }
+    ]
   },
   {
     "KindValue": "CallExpr",
@@ -25,16 +80,8 @@
     },
     "Arguments": [
       {
-        "KindValue": "BinaryExpr",
-        "Left": {
-          "KindValue": "Identifier",
-          "Symbol": "x"
-        },
-        "Right": {
-          "KindValue": "Identifier",
-          "Symbol": "y"
-        },
-        "Operator": "+"
+        "KindValue": "Identifier",
+        "Symbol": "yol"
       }
     ]
   }

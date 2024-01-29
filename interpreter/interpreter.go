@@ -25,6 +25,10 @@ func Evaluate(astNode AST.Stmt, env Environment) RuntimeVal {
 		return Eval_identifier(astNode.(AST.Identifier), env)
 	case AST.BinaryExprType:
 		return Eval_binary_expr(astNode.(AST.BinaryExpr), env)
+	case AST.IfStmtType:
+		return Eval_if_statement(astNode.(AST.IfStmt), env)
+	case AST.ForStmtType:
+		return Eval_for_statement(astNode.(AST.ForStmt), env)
 
 	// Statements
 

@@ -4,6 +4,7 @@ import (
 	AST "Gor/ast"
 	"fmt"
 	"os"
+	"reflect"
 )
 
 func Eval_binary_expr(binaryExpr AST.BinaryExpr, env Environment) RuntimeVal {
@@ -17,7 +18,140 @@ func Eval_binary_expr(binaryExpr AST.BinaryExpr, env Environment) RuntimeVal {
 	return MK_NULL()
 }
 
+func Eval_equals(lhs RuntimeVal, rhs RuntimeVal, operator string) RuntimeVal {
+
+	if lhs.Type() == NumberType && rhs.Type() == NumberType {
+		switch operator {
+		case "==":
+			return MK_BOOL(lhs.(NumberVal).Value == rhs.(NumberVal).Value)
+		case "!=":
+			return MK_BOOL(lhs.(NumberVal).Value != rhs.(NumberVal).Value)
+		case ">=":
+			return MK_BOOL(lhs.(NumberVal).Value >= rhs.(NumberVal).Value)
+		case "<=":
+			return MK_BOOL(lhs.(NumberVal).Value <= rhs.(NumberVal).Value)
+		case "&&":
+			return MK_NUMBER(rhs.(NumberVal).Value)
+		case "||":
+			return MK_NUMBER(lhs.(NumberVal).Value)
+		}
+	}
+
+	if lhs.Type() == BoolType && rhs.Type() == BoolType {
+		switch operator {
+		case "==":
+			return MK_BOOL(lhs.(BoolVal).Value == rhs.(BoolVal).Value)
+		case "!=":
+			return MK_BOOL(lhs.(BoolVal).Value != rhs.(BoolVal).Value)
+		case ">=":
+			var lef int
+			if lhs.(BoolVal).Value == true {
+				lef = 1
+			} else {
+				lef = 0
+			}
+			var rig int
+			if rhs.(BoolVal).Value == true {
+				rig = 1
+			} else {
+				rig = 0
+			}
+			return MK_BOOL(lef >= rig)
+		case "<=":
+			var lef int
+			if lhs.(BoolVal).Value == true {
+				lef = 1
+			} else {
+				lef = 0
+			}
+			var rig int
+			if rhs.(BoolVal).Value == true {
+				rig = 1
+			} else {
+				rig = 0
+			}
+			return MK_BOOL(lef <= rig)
+		case "&&":
+			return MK_BOOL(lhs.(BoolVal).Value && rhs.(BoolVal).Value)
+		case "||":
+			return MK_BOOL(lhs.(BoolVal).Value || rhs.(BoolVal).Value)
+		}
+	}
+
+	if lhs.Type() == StringType && rhs.Type() == StringType {
+		switch operator {
+		case "==":
+			return MK_BOOL(lhs.(StringVal).Value == rhs.(StringVal).Value)
+		case "!=":
+			return MK_BOOL(lhs.(StringVal).Value != rhs.(StringVal).Value)
+		case ">=":
+			return MK_BOOL(lhs.(StringVal).Value >= rhs.(StringVal).Value)
+		case "<=":
+			return MK_BOOL(lhs.(StringVal).Value <= rhs.(StringVal).Value)
+		case "&&":
+			return MK_STRING(rhs.(StringVal).Value)
+		case "||":
+			return MK_STRING(lhs.(StringVal).Value)
+		}
+	}
+
+	if lhs.Type() == ObjectType && rhs.Type() == ObjectType {
+		switch operator {
+		case "==":
+			return MK_BOOL(reflect.DeepEqual(lhs.(ObjectVal).Properties, rhs.(ObjectVal).Properties))
+		case "!=":
+			return MK_BOOL(!reflect.DeepEqual(lhs.(ObjectVal).Properties, rhs.(ObjectVal).Properties))
+		case ">=":
+			leftSize := len(lhs.(ObjectVal).Properties)
+			rightSize := len(rhs.(ObjectVal).Properties)
+			return MK_BOOL(leftSize >= rightSize)
+		case "<=":
+			leftSize := len(lhs.(ObjectVal).Properties)
+			rightSize := len(rhs.(ObjectVal).Properties)
+			return MK_BOOL(leftSize <= rightSize)
+		case "&&":
+			return MK_OBJECT(rhs.(ObjectVal).Properties)
+		case "||":
+			return MK_OBJECT(lhs.(ObjectVal).Properties)
+		}
+	}
+
+	if lhs.Type() == FunctionType && rhs.Type() == FunctionType {
+		switch operator {
+		case "==":
+			return MK_BOOL(lhs.(FunctionVal).Name == rhs.(FunctionVal).Name)
+		case "!=":
+			return MK_BOOL(lhs.(FunctionVal).Name != rhs.(FunctionVal).Name)
+		case ">=":
+			return MK_BOOL(lhs.(FunctionVal).Name >= rhs.(FunctionVal).Name)
+		case "<=":
+			return MK_BOOL(lhs.(FunctionVal).Name <= rhs.(FunctionVal).Name)
+		case "&&":
+			return MK_NATIVE_FUNC(rhs.(NativeFuncVal).Call)
+		case "||":
+			return MK_NATIVE_FUNC(lhs.(NativeFuncVal).Call)
+		}
+	}
+
+	return MK_NULL()
+}
+
 func Eval_binary_expr_number(operator string, lhs RuntimeVal, rhs RuntimeVal) RuntimeVal {
+
+	switch operator {
+	case "==":
+		return Eval_equals(lhs, rhs, operator)
+	case "!=":
+		return Eval_equals(lhs, rhs, operator)
+	case "&&":
+		return Eval_equals(lhs, rhs, operator)
+	case "||":
+		return Eval_equals(lhs, rhs, operator)
+	case ">=":
+		return Eval_equals(lhs, rhs, operator)
+	case "<=":
+		return Eval_equals(lhs, rhs, operator)
+	}
 
 	switch operator {
 	case "+":
@@ -30,22 +164,24 @@ func Eval_binary_expr_number(operator string, lhs RuntimeVal, rhs RuntimeVal) Ru
 		return MK_NUMBER(lhs.(NumberVal).Value / rhs.(NumberVal).Value)
 	case "%":
 		return MK_NUMBER(lhs.(NumberVal).Value % rhs.(NumberVal).Value)
-	case "&":
-		return MK_BOOL(lhs.(BoolVal).Value && rhs.(BoolVal).Value)
-	case "|":
-		return MK_BOOL(lhs.(BoolVal).Value || rhs.(BoolVal).Value)
-	case "==":
-		return MK_BOOL(lhs.(NumberVal).Value == rhs.(NumberVal).Value)
-	case "!=":
-		return MK_BOOL(lhs.(NumberVal).Value != rhs.(NumberVal).Value)
 	case ">":
 		return MK_BOOL(lhs.(NumberVal).Value > rhs.(NumberVal).Value)
 	case "<":
 		return MK_BOOL(lhs.(NumberVal).Value < rhs.(NumberVal).Value)
-	case ">=":
-		return MK_BOOL(lhs.(NumberVal).Value >= rhs.(NumberVal).Value)
-	case "<=":
-		return MK_BOOL(lhs.(NumberVal).Value <= rhs.(NumberVal).Value)
+	case "&":
+		if lhs.Type() == BoolType && rhs.Type() == BoolType {
+			return MK_BOOL(lhs.(BoolVal).Value && rhs.(BoolVal).Value)
+		}
+		if lhs.Type() == NumberType && rhs.Type() == NumberType {
+			return MK_NUMBER(lhs.(NumberVal).Value & rhs.(NumberVal).Value)
+		}
+	case "|":
+		if lhs.Type() == BoolType && rhs.Type() == BoolType {
+			return MK_BOOL(lhs.(BoolVal).Value || rhs.(BoolVal).Value)
+		}
+		if lhs.Type() == NumberType && rhs.Type() == NumberType {
+			return MK_NUMBER(lhs.(NumberVal).Value | rhs.(NumberVal).Value)
+		}
 	}
 
 	return MK_NULL()
