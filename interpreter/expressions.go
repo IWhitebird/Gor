@@ -9,13 +9,10 @@ import (
 
 func Eval_binary_expr(binaryExpr AST.BinaryExpr, env Environment) RuntimeVal {
 	var lhs RuntimeVal = Evaluate(binaryExpr.Left, env)
+
 	var rhs RuntimeVal = Evaluate(binaryExpr.Right, env)
 
-	if lhs.Type() == NumberType && rhs.Type() == NumberType {
-		return Eval_binary_expr_number(binaryExpr.Operator, lhs, rhs)
-	}
-
-	return MK_NULL()
+	return Eval_binary_expr_number(binaryExpr.Operator, lhs, rhs)
 }
 
 func Eval_equals(lhs RuntimeVal, rhs RuntimeVal, operator string) RuntimeVal {

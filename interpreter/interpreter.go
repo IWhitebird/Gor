@@ -7,8 +7,8 @@ import (
 )
 
 func Evaluate(astNode AST.Stmt, env Environment) RuntimeVal {
-	switch astNode.Kind() {
 
+	switch astNode.Kind() {
 	// Expressions
 
 	case AST.NumericLiteralType:

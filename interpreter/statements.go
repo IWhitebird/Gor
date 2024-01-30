@@ -34,6 +34,7 @@ func Eval_function_declaration(functionDeclaration AST.FunctionDeclaration, env 
 }
 
 func Eval_if_statement(declaration AST.IfStmt, env Environment) RuntimeVal {
+
 	test := Evaluate(declaration.Test, env)
 
 	if test.(BoolVal).Value {

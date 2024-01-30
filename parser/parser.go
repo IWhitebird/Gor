@@ -234,7 +234,7 @@ func (p *Parser) parseAndStatement() AST.Expr {
 
 func (p *Parser) parseOjbectExpr() AST.Expr {
 
-	// NO OPEN BRAME
+	// NO OPEN BRACE
 
 	if p.peek().Type != LEX.OpenBrace {
 		return p.parseAndStatement()

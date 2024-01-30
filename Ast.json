@@ -5,7 +5,7 @@
     "Identifier": "yol",
     "Value": {
       "KindValue": "NumericLiteral",
-      "Value": 0
+      "Value": 10
     }
   },
   {
@@ -27,7 +27,7 @@
       },
       "Right": {
         "KindValue": "NumericLiteral",
-        "Value": 10
+        "Value": 1
       },
       "Operator": "\u003c"
     },
@@ -73,16 +73,47 @@
     ]
   },
   {
-    "KindValue": "CallExpr",
-    "Caller": {
-      "KindValue": "Identifier",
-      "Symbol": "print"
-    },
-    "Arguments": [
-      {
+    "KindValue": "IfStmt",
+    "Test": {
+      "KindValue": "BinaryExpr",
+      "Left": {
         "KindValue": "Identifier",
         "Symbol": "yol"
+      },
+      "Right": {
+        "KindValue": "NumericLiteral",
+        "Value": 55
+      },
+      "Operator": "\u003c"
+    },
+    "Body": [
+      {
+        "KindValue": "CallExpr",
+        "Caller": {
+          "KindValue": "Identifier",
+          "Symbol": "print"
+        },
+        "Arguments": [
+          {
+            "KindValue": "Identifier",
+            "Symbol": "yol"
+          }
+        ]
+      },
+      {
+        "KindValue": "CallExpr",
+        "Caller": {
+          "KindValue": "Identifier",
+          "Symbol": "print"
+        },
+        "Arguments": [
+          {
+            "KindValue": "StringLiteral",
+            "Value": "hee"
+          }
+        ]
       }
-    ]
+    ],
+    "Alternate": []
   }
 ]
