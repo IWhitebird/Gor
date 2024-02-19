@@ -2,6 +2,7 @@ package interpreter
 
 import (
 	AST "Gor/ast"
+	"fmt"
 )
 
 func Eval_program(program AST.Program, env Environment) RuntimeVal {
@@ -9,9 +10,22 @@ func Eval_program(program AST.Program, env Environment) RuntimeVal {
 
 	for _, statement := range program.Body {
 
-		if statement.Kind() == AST.ReturnStmtType {
-			return Evaluate(statement, env)
+		lastEvaluated = Evaluate(statement, env)
+
+		if lastEvaluated.Type() == ReturnType {
+			return lastEvaluated.(ReturnVal).Value
 		}
+
+	}
+
+	return lastEvaluated
+}
+
+func Eval_block_statement(blockStmt AST.BlockStmt, env Environment) RuntimeVal {
+	var lastEvaluated RuntimeVal = MK_NULL()
+	for _, statement := range blockStmt.Body {
+
+		fmt.Println("Evaluating AST Node", statement.Kind())
 
 		lastEvaluated = Evaluate(statement, env)
 
@@ -20,6 +34,7 @@ func Eval_program(program AST.Program, env Environment) RuntimeVal {
 		}
 
 	}
+
 	return lastEvaluated
 }
 
@@ -57,7 +72,7 @@ func Eval_if_statement(declaration AST.IfStmt, env Environment) RuntimeVal {
 	}
 }
 
-func Eval_body(body []AST.Stmt, env Environment, newEnv bool) RuntimeVal {
+func Eval_body(body AST.Stmt, env Environment, newEnv bool) RuntimeVal {
 	var scope *Environment
 
 	if newEnv {
@@ -68,17 +83,11 @@ func Eval_body(body []AST.Stmt, env Environment, newEnv bool) RuntimeVal {
 
 	var result RuntimeVal = MK_NULL()
 
-	for _, statement := range body {
-
-		if statement.Kind() == AST.ReturnStmtType {
-			return Evaluate(statement, *scope)
-		}
-
-		result = Evaluate(statement, *scope)
-
-		if result.Type() == ReturnType {
-			return result
-		}
+	switch body.Kind() {
+	case AST.BlockStmtType:
+		result = Eval_block_statement(body.(AST.BlockStmt), *scope)
+	case AST.IfStmtType:
+		result = Eval_if_statement(body.(AST.IfStmt), *scope)
 	}
 
 	return result

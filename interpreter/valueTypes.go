@@ -81,7 +81,7 @@ type FunctionVal struct {
 	TypeVal    ValueType
 	Name       string
 	Parameters []string
-	Body       []AST.Stmt
+	Body       AST.BlockStmt
 	Env        Environment
 }
 
@@ -197,8 +197,6 @@ func RuntimeVal_Wrapper(val RuntimeVal) interface{} {
 		return val.(BoolVal).Value
 	case ObjectType:
 		return val.(ObjectVal).Properties
-	case ReturnType:
-		return RuntimeVal_Wrapper(val.(ReturnVal).Value)
 	}
 
 	// Return a default value in case the type is not recognized

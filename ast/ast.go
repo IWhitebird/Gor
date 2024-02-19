@@ -12,7 +12,7 @@ const (
 	VariableDeclarationType NodeType = "VariableDeclaration"
 	FunctionDeclarationType NodeType = "FunctionDeclaration"
 
-    // Expressions
+	// Expressions
 	AssignmentExprType NodeType = "AssignmentExpr"
 	MemberExprType     NodeType = "MemberExpr"
 	CallExprType       NodeType = "CallExpr"
@@ -27,7 +27,7 @@ const (
 	BlockStmtType      NodeType = "BlockStmt"
 	IfStmtType         NodeType = "IfStmt"
 	ForStmtType        NodeType = "ForStmt"
-    ReturnStmtType     NodeType = "ReturnStmt"
+	ReturnStmtType     NodeType = "ReturnStmt"
 )
 
 /*
@@ -47,6 +47,19 @@ type Program struct {
 
 func (p Program) Kind() NodeType {
 	return p.KindValue
+}
+
+/*
+BlockStmt represents a block of statements inside the source code.
+*/
+
+type BlockStmt struct {
+	KindValue NodeType
+	Body      []Stmt
+}
+
+func (b BlockStmt) Kind() NodeType {
+	return b.KindValue
 }
 
 /*
@@ -71,7 +84,7 @@ type FunctionDeclaration struct {
 	KindValue  NodeType
 	Identifier string
 	Parameters []string
-	Body       []Stmt
+	Body       BlockStmt
 }
 
 func (f FunctionDeclaration) Kind() NodeType {
@@ -83,12 +96,12 @@ Return represents a return statement in the source.
 */
 
 type ReturnStmt struct {
-    KindValue NodeType
-    Value     Expr
+	KindValue NodeType
+	Value     Expr
 }
 
 func (r ReturnStmt) Kind() NodeType {
-    return r.KindValue
+	return r.KindValue
 }
 
 /*
@@ -97,8 +110,8 @@ IfStmt represents an if statement in the source.
 type IfStmt struct {
 	KindValue NodeType
 	Test      Expr
-	Body      []Stmt
-	Alternate []Stmt
+	Body      BlockStmt
+	Alternate Stmt
 }
 
 func (i IfStmt) Kind() NodeType {
@@ -114,7 +127,7 @@ type ForStmt struct {
 	Init      Expr
 	Test      Expr
 	Update    Expr
-	Body      []Stmt
+	Body      BlockStmt
 }
 
 func (f ForStmt) Kind() NodeType {

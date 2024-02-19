@@ -1,13 +1,12 @@
 fn tolo() {
-    return 20
-    if (10 > 1) {
-        if (10 > 1) {
+    if (100 > 550) {
+        if (200 > 500) {
             return 10
-            print("hi")
         }
         return 1
     }
     return 30
 }
 
-tolo()
+const resp = tolo()
+print(resp)

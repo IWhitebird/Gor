@@ -8,8 +8,6 @@ import (
 
 func Evaluate(astNode AST.Stmt, env Environment) RuntimeVal {
 
-	fmt.Println("Evaluating AST Node", astNode.Kind())
-
 	switch astNode.Kind() {
 	// Expressions
 
@@ -29,6 +27,8 @@ func Evaluate(astNode AST.Stmt, env Environment) RuntimeVal {
 		return Eval_identifier(astNode.(AST.Identifier), env)
 	case AST.BinaryExprType:
 		return Eval_binary_expr(astNode.(AST.BinaryExpr), env)
+	case AST.BlockStmtType:
+		return Eval_block_statement(astNode.(AST.BlockStmt), env)
 	case AST.IfStmtType:
 		return Eval_if_statement(astNode.(AST.IfStmt), env)
 	case AST.ForStmtType:

@@ -23,19 +23,6 @@ func (p *Parser) consume() LEX.Token {
 	return token
 }
 
-// func (p *Parser) not_check(tokenTypes []LEX.TokenType, errorMessage string) bool {
-
-// 	for _, tokenType := range tokenTypes {
-// 		if p.peek().Type == tokenType {
-// 			return false
-// 		}
-// 	}
-
-// 	fmt.Println(errorMessage)
-// 	os.Exit(1)
-// 	return true
-// }
-
 func (p *Parser) expect(tokenType LEX.TokenType, errorMessage string) LEX.Token {
 	if p.peek().Type == tokenType {
 		return p.consume()
@@ -79,8 +66,8 @@ func (p *Parser) parseStmt() AST.Stmt {
 	case LEX.Const:
 		return p.parseVariableDeclaration()
 	case LEX.Return:
-        return p.parseReturnStatement()
-    case LEX.Function:
+		return p.parseReturnStatement()
+	case LEX.Function:
 		return p.parseFunctionDeclaration()
 	case LEX.If:
 		return p.parseIfStatement()
@@ -92,9 +79,9 @@ func (p *Parser) parseStmt() AST.Stmt {
 }
 
 func (p *Parser) parseReturnStatement() AST.Stmt {
-    p.consume()
-    value := p.parseExpr()
-    return AST.ReturnStmt{KindValue: AST.ReturnStmtType, Value: value}
+	p.consume()
+	value := p.parseExpr()
+	return AST.ReturnStmt{KindValue: AST.ReturnStmtType, Value: value}
 }
 
 func (p *Parser) parseIfStatement() AST.Stmt {
@@ -108,19 +95,19 @@ func (p *Parser) parseIfStatement() AST.Stmt {
 
 	body := p.parseBlockStmt()
 
-	alternate := []AST.Stmt{}
+	var alternate AST.Stmt
 
 	if p.peek().Type == LEX.Else {
 		p.consume()
 
 		if p.peek().Type == LEX.If {
-			alternate = append(alternate, p.parseIfStatement())
+			alternate = p.parseIfStatement().(AST.IfStmt)
 		} else {
-			alternate = p.parseBlockStmt()
+			alternate = p.parseBlockStmt().(AST.BlockStmt)
 		}
 	}
 
-	return AST.IfStmt{KindValue: AST.IfStmtType, Test: left_expr, Body: body, Alternate: alternate}
+	return AST.IfStmt{KindValue: AST.IfStmtType, Test: left_expr, Body: body.(AST.BlockStmt), Alternate: alternate}
 
 }
 
@@ -142,12 +129,12 @@ func (p *Parser) parseForStatement() AST.Stmt {
 
 	body := p.parseBlockStmt()
 
-	return AST.ForStmt{KindValue: AST.ForStmtType, Init: init, Test: test, Update: update, Body: body}
+	return AST.ForStmt{KindValue: AST.ForStmtType, Init: init, Test: test, Update: update, Body: body.(AST.BlockStmt)}
 }
 
 func (p *Parser) parseFunctionDeclaration() AST.Stmt {
 	p.consume()
-	p.expect(LEX.Identifier, "Error: Missing Identifier")
+	iden := p.expect(LEX.Identifier, "Error: Missing Identifier")
 
 	args := p.parseArguments()
 	params := []string{}
@@ -162,10 +149,10 @@ func (p *Parser) parseFunctionDeclaration() AST.Stmt {
 
 	body := p.parseBlockStmt()
 
-	return AST.FunctionDeclaration{KindValue: AST.FunctionDeclarationType, Identifier: p.peek().Value, Parameters: params, Body: body}
+	return AST.FunctionDeclaration{KindValue: AST.FunctionDeclarationType, Identifier: iden.Value, Parameters: params, Body: body.(AST.BlockStmt)}
 }
 
-func (p *Parser) parseBlockStmt() []AST.Stmt {
+func (p *Parser) parseBlockStmt() AST.Stmt {
 	p.expect(LEX.OpenBrace, "Error: Missing Opening Brace")
 
 	var body []AST.Stmt = []AST.Stmt{}
@@ -176,7 +163,7 @@ func (p *Parser) parseBlockStmt() []AST.Stmt {
 
 	p.expect(LEX.CloseBrace, "Error: Missing Closing Brace")
 
-	return body
+	return AST.BlockStmt{KindValue: AST.BlockStmtType, Body: body}
 }
 
 func (p *Parser) parseVariableDeclaration() AST.Stmt {
@@ -210,7 +197,6 @@ func (p *Parser) parseVariableDeclaration() AST.Stmt {
 	}
 
 	return dec
-
 }
 
 func (p *Parser) parseExpr() AST.Expr {
