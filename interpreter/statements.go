@@ -6,8 +6,19 @@ import (
 
 func Eval_program(program AST.Program, env Environment) RuntimeVal {
 	var lastEvaluated RuntimeVal = MK_NULL()
-	for _, statements := range program.Body {
-		lastEvaluated = Evaluate(statements, env)
+
+	for _, statement := range program.Body {
+
+		if statement.Kind() == AST.ReturnStmtType {
+			return Evaluate(statement, env)
+		}
+
+		lastEvaluated = Evaluate(statement, env)
+
+		if lastEvaluated.Type() == ReturnType {
+			return lastEvaluated
+		}
+
 	}
 	return lastEvaluated
 }
@@ -58,7 +69,16 @@ func Eval_body(body []AST.Stmt, env Environment, newEnv bool) RuntimeVal {
 	var result RuntimeVal = MK_NULL()
 
 	for _, statement := range body {
+
+		if statement.Kind() == AST.ReturnStmtType {
+			return Evaluate(statement, *scope)
+		}
+
 		result = Evaluate(statement, *scope)
+
+		if result.Type() == ReturnType {
+			return result
+		}
 	}
 
 	return result

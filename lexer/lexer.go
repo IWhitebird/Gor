@@ -127,6 +127,13 @@ func Tokenize(inputToken string) []Token {
 		if t != "" {
 
 			switch t {
+            case "#":
+                for j := i + 1; j < len(inputToken); j++ {
+                    if inputToken[j:j+1] == "\n" {
+                        i = j
+                        break
+                    }
+                }
 			case "=":
 				if inputToken[i+1:i+2] == "=" {
 					tokens = append(tokens, token("==", EqualsOperator))

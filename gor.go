@@ -26,7 +26,7 @@ func CompleteFile() {
 
 	//From File
 
-	inputFile, inputFileErr := os.ReadFile("input.txt")
+	inputFile, inputFileErr := os.ReadFile("input.gor")
 	if inputFileErr != nil {
 		log.Fatal(inputFileErr)
 	}

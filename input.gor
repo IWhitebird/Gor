@@ -1,0 +1,13 @@
+fn tolo() {
+    return 20
+    if (10 > 1) {
+        if (10 > 1) {
+            return 10
+            print("hi")
+        }
+        return 1
+    }
+    return 30
+}
+
+tolo()

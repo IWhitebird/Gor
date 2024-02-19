@@ -1,119 +1,94 @@
 [
   {
-    "KindValue": "VariableDeclaration",
-    "Constant": false,
-    "Identifier": "yol",
-    "Value": {
-      "KindValue": "NumericLiteral",
-      "Value": 10
-    }
-  },
-  {
-    "KindValue": "ForStmt",
-    "Init": {
-      "KindValue": "VariableDeclaration",
-      "Constant": false,
-      "Identifier": "i",
-      "Value": {
-        "KindValue": "NumericLiteral",
-        "Value": 0
-      }
-    },
-    "Test": {
-      "KindValue": "BinaryExpr",
-      "Left": {
-        "KindValue": "Identifier",
-        "Symbol": "i"
-      },
-      "Right": {
-        "KindValue": "NumericLiteral",
-        "Value": 1
-      },
-      "Operator": "\u003c"
-    },
-    "Update": {
-      "KindValue": "AssignmentExpr",
-      "Left": {
-        "KindValue": "Identifier",
-        "Symbol": "i"
-      },
-      "Right": {
-        "KindValue": "BinaryExpr",
-        "Left": {
-          "KindValue": "Identifier",
-          "Symbol": "i"
-        },
-        "Right": {
-          "KindValue": "NumericLiteral",
-          "Value": 1
-        },
-        "Operator": "+"
-      }
-    },
+    "KindValue": "FunctionDeclaration",
+    "Identifier": "tolo",
+    "Parameters": [],
     "Body": [
       {
-        "KindValue": "AssignmentExpr",
-        "Left": {
-          "KindValue": "Identifier",
-          "Symbol": "yol"
-        },
-        "Right": {
+        "KindValue": "ReturnStmt",
+        "Value": {
+          "KindValue": "NumericLiteral",
+          "Value": 20
+        }
+      },
+      {
+        "KindValue": "IfStmt",
+        "Test": {
           "KindValue": "BinaryExpr",
           "Left": {
-            "KindValue": "Identifier",
-            "Symbol": "yol"
+            "KindValue": "NumericLiteral",
+            "Value": 10
           },
           "Right": {
-            "KindValue": "Identifier",
-            "Symbol": "i"
+            "KindValue": "NumericLiteral",
+            "Value": 1
           },
-          "Operator": "+"
+          "Operator": "\u003e"
+        },
+        "Body": [
+          {
+            "KindValue": "IfStmt",
+            "Test": {
+              "KindValue": "BinaryExpr",
+              "Left": {
+                "KindValue": "NumericLiteral",
+                "Value": 10
+              },
+              "Right": {
+                "KindValue": "NumericLiteral",
+                "Value": 1
+              },
+              "Operator": "\u003e"
+            },
+            "Body": [
+              {
+                "KindValue": "ReturnStmt",
+                "Value": {
+                  "KindValue": "NumericLiteral",
+                  "Value": 10
+                }
+              },
+              {
+                "KindValue": "CallExpr",
+                "Caller": {
+                  "KindValue": "Identifier",
+                  "Symbol": "print"
+                },
+                "Arguments": [
+                  {
+                    "KindValue": "StringLiteral",
+                    "Value": "hi"
+                  }
+                ]
+              }
+            ],
+            "Alternate": []
+          },
+          {
+            "KindValue": "ReturnStmt",
+            "Value": {
+              "KindValue": "NumericLiteral",
+              "Value": 1
+            }
+          }
+        ],
+        "Alternate": []
+      },
+      {
+        "KindValue": "ReturnStmt",
+        "Value": {
+          "KindValue": "NumericLiteral",
+          "Value": 30
         }
       }
     ]
   },
   {
-    "KindValue": "IfStmt",
-    "Test": {
-      "KindValue": "BinaryExpr",
-      "Left": {
-        "KindValue": "Identifier",
-        "Symbol": "yol"
-      },
-      "Right": {
-        "KindValue": "NumericLiteral",
-        "Value": 55
-      },
-      "Operator": "\u003c"
+    "KindValue": "CallExpr",
+    "Caller": {
+      "KindValue": "Identifier",
+      "Symbol": "tolo"
     },
-    "Body": [
-      {
-        "KindValue": "CallExpr",
-        "Caller": {
-          "KindValue": "Identifier",
-          "Symbol": "print"
-        },
-        "Arguments": [
-          {
-            "KindValue": "Identifier",
-            "Symbol": "yol"
-          }
-        ]
-      },
-      {
-        "KindValue": "CallExpr",
-        "Caller": {
-          "KindValue": "Identifier",
-          "Symbol": "print"
-        },
-        "Arguments": [
-          {
-            "KindValue": "StringLiteral",
-            "Value": "hee"
-          }
-        ]
-      }
-    ],
-    "Alternate": []
+    "Arguments": []
   }
 ]

@@ -8,6 +8,8 @@ import (
 
 func Evaluate(astNode AST.Stmt, env Environment) RuntimeVal {
 
+	fmt.Println("Evaluating AST Node", astNode.Kind())
+
 	switch astNode.Kind() {
 	// Expressions
 
@@ -15,6 +17,8 @@ func Evaluate(astNode AST.Stmt, env Environment) RuntimeVal {
 		return NumberVal{TypeVal: NumberType, Value: astNode.(AST.NumericLiteral).Value}
 	case AST.StringLiteralType:
 		return StringVal{TypeVal: StringType, Value: astNode.(AST.StringLiteral).Value}
+	case AST.ReturnStmtType:
+		return ReturnVal{TypeVal: ReturnType, Value: Evaluate(astNode.(AST.ReturnStmt).Value, env)}
 	case AST.OjectLiteralType:
 		return Eval_object_expr(astNode.(AST.ObjectLiteral), env)
 	case AST.CallExprType:

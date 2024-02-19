@@ -1,0 +1,18 @@
+print("Hi")
+fn series() {
+let one = 0
+    let two = 1
+    let three = 0
+
+    for(let i = 0 ; i  < 10 ; i = i + 1) {
+        three = one + two
+        one = two
+        two = three
+        if(three == 8) {
+            return three
+        }
+        print(three)
+    }
+}
+
+series()

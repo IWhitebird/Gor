@@ -245,7 +245,17 @@ func Eval_call_expr(callExpr AST.CallExpr, env Environment) RuntimeVal {
 		var result RuntimeVal = MK_NULL()
 
 		for _, statement := range caller.Body {
+
+			if statement.Kind() == AST.ReturnStmtType {
+				return Evaluate(statement, *scope)
+			}
+
 			result = Evaluate(statement, *scope)
+
+			if result.Type() == ReturnType {
+				return result
+			}
+
 		}
 
 		return result

@@ -14,6 +14,7 @@ const (
 	ObjectType     ValueType = "object"
 	NativeFuncType ValueType = "nativeFunc"
 	FunctionType   ValueType = "function"
+	ReturnType     ValueType = "return"
 )
 
 type RuntimeVal interface {
@@ -88,7 +89,23 @@ func (f FunctionVal) Type() ValueType {
 	return f.TypeVal
 }
 
+type ReturnVal struct {
+	TypeVal ValueType
+	Value   RuntimeVal
+}
+
+func (r ReturnVal) Type() ValueType {
+	return r.TypeVal
+}
+
 // Instant Make Function
+
+func MK_RETURN(value RuntimeVal) ReturnVal {
+	return ReturnVal{
+		TypeVal: ReturnType,
+		Value:   value,
+	}
+}
 
 func MK_NULL() NullVal {
 	return NullVal{
@@ -180,6 +197,8 @@ func RuntimeVal_Wrapper(val RuntimeVal) interface{} {
 		return val.(BoolVal).Value
 	case ObjectType:
 		return val.(ObjectVal).Properties
+	case ReturnType:
+		return RuntimeVal_Wrapper(val.(ReturnVal).Value)
 	}
 
 	// Return a default value in case the type is not recognized

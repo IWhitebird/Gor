@@ -78,7 +78,9 @@ func (p *Parser) parseStmt() AST.Stmt {
 		return p.parseVariableDeclaration()
 	case LEX.Const:
 		return p.parseVariableDeclaration()
-	case LEX.Function:
+	case LEX.Return:
+        return p.parseReturnStatement()
+    case LEX.Function:
 		return p.parseFunctionDeclaration()
 	case LEX.If:
 		return p.parseIfStatement()
@@ -87,6 +89,12 @@ func (p *Parser) parseStmt() AST.Stmt {
 	default:
 		return p.parseExpr()
 	}
+}
+
+func (p *Parser) parseReturnStatement() AST.Stmt {
+    p.consume()
+    value := p.parseExpr()
+    return AST.ReturnStmt{KindValue: AST.ReturnStmtType, Value: value}
 }
 
 func (p *Parser) parseIfStatement() AST.Stmt {

@@ -11,7 +11,8 @@ const (
 	ProgramType             NodeType = "Program"
 	VariableDeclarationType NodeType = "VariableDeclaration"
 	FunctionDeclarationType NodeType = "FunctionDeclaration"
-	// Expressions
+
+    // Expressions
 	AssignmentExprType NodeType = "AssignmentExpr"
 	MemberExprType     NodeType = "MemberExpr"
 	CallExprType       NodeType = "CallExpr"
@@ -26,6 +27,7 @@ const (
 	BlockStmtType      NodeType = "BlockStmt"
 	IfStmtType         NodeType = "IfStmt"
 	ForStmtType        NodeType = "ForStmt"
+    ReturnStmtType     NodeType = "ReturnStmt"
 )
 
 /*
@@ -74,6 +76,19 @@ type FunctionDeclaration struct {
 
 func (f FunctionDeclaration) Kind() NodeType {
 	return f.KindValue
+}
+
+/*
+Return represents a return statement in the source.
+*/
+
+type ReturnStmt struct {
+    KindValue NodeType
+    Value     Expr
+}
+
+func (r ReturnStmt) Kind() NodeType {
+    return r.KindValue
 }
 
 /*
