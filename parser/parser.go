@@ -108,7 +108,6 @@ func (p *Parser) parseIfStatement() AST.Stmt {
 	}
 
 	return AST.IfStmt{KindValue: AST.IfStmtType, Test: left_expr, Body: body.(AST.BlockStmt), Alternate: alternate}
-
 }
 
 func (p *Parser) parseForStatement() AST.Stmt {

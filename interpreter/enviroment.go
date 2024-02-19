@@ -17,6 +17,7 @@ func NewEnvironment(parentEnv *Environment) *Environment {
 		Constants: make(map[string]bool),
 	}
 }
+
 func (env *Environment) DeclareVar(varname string, value RuntimeVal, optionalParams ...bool) RuntimeVal {
 	if _, exists := env.Variables[varname]; exists {
 		fmt.Println("ERROR : Cannot declare variable, As it already is defined.", varname)
@@ -68,8 +69,6 @@ func EnviromentSetup() *Environment {
 	// Root Environment Instance
 	parentEnv := NewEnvironment(nil)
 	// Declare Variables
-	parentEnv.DeclareVar("a", MK_NUMBER(10))
-	parentEnv.DeclareVar("b", MK_NUMBER(20))
 	parentEnv.DeclareVar("null", MK_NULL())
 	parentEnv.DeclareVar("true", MK_BOOL(true))
 	parentEnv.DeclareVar("false", MK_BOOL(false))

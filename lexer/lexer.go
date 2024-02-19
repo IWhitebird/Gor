@@ -245,7 +245,7 @@ func Tokenize(inputToken string) []Token {
 	}
 	tokens = append(tokens, token("EndOfFile", EOF))
 
-	fmt.Println(tokens)
+	// fmt.Println(tokens)
 
 	return tokens
 }

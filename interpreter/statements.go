@@ -2,10 +2,9 @@ package interpreter
 
 import (
 	AST "Gor/ast"
-	"fmt"
 )
 
-func Eval_program(program AST.Program, env Environment) RuntimeVal {
+func Eval_program(program AST.Program, env *Environment) RuntimeVal {
 	var lastEvaluated RuntimeVal = MK_NULL()
 
 	for _, statement := range program.Body {
@@ -21,11 +20,11 @@ func Eval_program(program AST.Program, env Environment) RuntimeVal {
 	return lastEvaluated
 }
 
-func Eval_block_statement(blockStmt AST.BlockStmt, env Environment) RuntimeVal {
+func Eval_block_statement(blockStmt AST.BlockStmt, env *Environment) RuntimeVal {
 	var lastEvaluated RuntimeVal = MK_NULL()
 	for _, statement := range blockStmt.Body {
 
-		fmt.Println("Evaluating AST Node", statement.Kind())
+		// fmt.Println("Evaluating AST Node", statement.Kind())
 
 		lastEvaluated = Evaluate(statement, env)
 
@@ -38,7 +37,7 @@ func Eval_block_statement(blockStmt AST.BlockStmt, env Environment) RuntimeVal {
 	return lastEvaluated
 }
 
-func Eval_variable_declaration(variableDeclaration AST.VariableDeclaration, env Environment) RuntimeVal {
+func Eval_variable_declaration(variableDeclaration AST.VariableDeclaration, env *Environment) RuntimeVal {
 	if variableDeclaration.Value == nil {
 		return MK_NULL()
 	}
@@ -46,20 +45,20 @@ func Eval_variable_declaration(variableDeclaration AST.VariableDeclaration, env 
 	return env.DeclareVar(variableDeclaration.Identifier, value, variableDeclaration.Constant)
 }
 
-func Eval_function_declaration(functionDeclaration AST.FunctionDeclaration, env Environment) RuntimeVal {
+func Eval_function_declaration(functionDeclaration AST.FunctionDeclaration, env *Environment) RuntimeVal {
 
 	function := FunctionVal{
 		TypeVal:    FunctionType,
 		Name:       functionDeclaration.Identifier,
 		Parameters: functionDeclaration.Parameters,
 		Body:       functionDeclaration.Body,
-		Env:        env,
+		Env:        *env,
 	}
 
 	return env.DeclareVar(functionDeclaration.Identifier, function, false)
 }
 
-func Eval_if_statement(declaration AST.IfStmt, env Environment) RuntimeVal {
+func Eval_if_statement(declaration AST.IfStmt, env *Environment) RuntimeVal {
 
 	test := Evaluate(declaration.Test, env)
 
@@ -72,32 +71,32 @@ func Eval_if_statement(declaration AST.IfStmt, env Environment) RuntimeVal {
 	}
 }
 
-func Eval_body(body AST.Stmt, env Environment, newEnv bool) RuntimeVal {
+func Eval_body(body AST.Stmt, env *Environment, newEnv bool) RuntimeVal {
 	var scope *Environment
 
 	if newEnv {
-		scope = NewEnvironment(&env)
+		scope = NewEnvironment(env)
 	} else {
-		scope = &env
+		scope = env
 	}
 
 	var result RuntimeVal = MK_NULL()
 
 	switch body.Kind() {
 	case AST.BlockStmtType:
-		result = Eval_block_statement(body.(AST.BlockStmt), *scope)
+		result = Eval_block_statement(body.(AST.BlockStmt), scope)
 	case AST.IfStmtType:
-		result = Eval_if_statement(body.(AST.IfStmt), *scope)
+		result = Eval_if_statement(body.(AST.IfStmt), scope)
 	}
 
 	return result
 }
 
-func Eval_for_statement(declaration AST.ForStmt, env Environment) RuntimeVal {
-	newenv := NewEnvironment(&env)
+func Eval_for_statement(declaration AST.ForStmt, env *Environment) RuntimeVal {
+	newenv := NewEnvironment(env)
 
-	Eval_variable_declaration(declaration.Init.(AST.VariableDeclaration), *newenv)
-	test := Evaluate(declaration.Test, *newenv)
+	Eval_variable_declaration(declaration.Init.(AST.VariableDeclaration), newenv)
+	test := Evaluate(declaration.Test, newenv)
 	update := declaration.Update
 	body := declaration.Body
 
@@ -107,12 +106,12 @@ func Eval_for_statement(declaration AST.ForStmt, env Environment) RuntimeVal {
 
 	for {
 
-		Eval_assignment_expr(update.(AST.AssignmentExpr), *newenv)
+		Eval_assignment_expr(update.(AST.AssignmentExpr), newenv)
 
 		new_newenv := NewEnvironment(newenv)
-		Eval_body(body, *new_newenv, false)
+		Eval_body(body, new_newenv, false)
 
-		test = Evaluate(declaration.Test, *newenv)
+		test = Evaluate(declaration.Test, newenv)
 
 		if !test.(BoolVal).Value {
 			break

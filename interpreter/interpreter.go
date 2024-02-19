@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func Evaluate(astNode AST.Stmt, env Environment) RuntimeVal {
+func Evaluate(astNode AST.Stmt, env *Environment) RuntimeVal {
 
 	switch astNode.Kind() {
 	// Expressions

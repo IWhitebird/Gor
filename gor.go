@@ -33,30 +33,30 @@ func CompleteFile() {
 
 	program := parser.ProduceAst(string(inputFile))
 
-	bodyJSON, err := json.MarshalIndent(program.Body, "", "  ")
-	if err != nil {
-		fmt.Println("Error marshaling JSON:", err)
-		return
-	}
+	// bodyJSON, err := json.MarshalIndent(program.Body, "", "  ")
+	// if err != nil {
+	// 	fmt.Println("Error marshaling JSON:", err)
+	// 	return
+	// }
 
-	// Write JSON data to the file
-	if OutputFileErr == nil {
-		_, writeErr := outputFile.Write(bodyJSON)
-		if writeErr != nil {
-			fmt.Println("Error writing to file:", writeErr)
-		}
-	} else {
-		fmt.Println("Error opening file:", OutputFileErr)
-	}
+	// // Write JSON data to the file
+	// if OutputFileErr == nil {
+	// 	_, writeErr := outputFile.Write(bodyJSON)
+	// 	if writeErr != nil {
+	// 		fmt.Println("Error writing to file:", writeErr)
+	// 	}
+	// } else {
+	// 	fmt.Println("Error opening file:", OutputFileErr)
+	// }
 
-	evaluatedProgram := ITR.Eval_program(program, *env)
+	ITR.Evaluate(program, env)
 
 	// if evaluatedProgram.Type() == ITR.NumberType {
 	// 	fmt.Println(evaluatedProgram.(ITR.NumberVal).Value)
 	// 	return
 	// }
-	fmt.Println("Evaluated Program : ", evaluatedProgram)
-	fmt.Println("Wrapped Program : ", ITR.RuntimeVal_Wrapper(evaluatedProgram))
+	// fmt.Println("Evaluated Program : ", evaluatedProgram)
+	// fmt.Println("Wrapped Program : ", ITR.RuntimeVal_Wrapper(evaluatedProgram))
 
 	if err := scanner.Err(); err != nil {
 		fmt.Println("Error reading input:", err)
@@ -99,7 +99,7 @@ func Repl() {
 			fmt.Println("Error opening file:", OutputFileErr)
 		}
 
-		evaluatedProgram := ITR.Eval_program(program, *env)
+		evaluatedProgram := ITR.Evaluate(program, env)
 
 		fmt.Println("Evaluated Program : ", evaluatedProgram)
 	}
@@ -110,7 +110,29 @@ func Repl() {
 
 }
 
+func testo() {
+	printPrime(10000)
+}
+
+func checkPrime(n int) bool {
+	for i := 2; i < n; i++ {
+		if n%i == 0 {
+			return false
+		}
+	}
+	return true
+}
+
+func printPrime(n int) {
+	for i := 2; i < n; i++ {
+		if checkPrime(i) {
+			fmt.Println(i)
+		}
+	}
+}
+
 func main() {
 	CompleteFile()
 	// Repl()
+	// testo()
 }

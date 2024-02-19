@@ -7,7 +7,7 @@ import (
 	"reflect"
 )
 
-func Eval_binary_expr(binaryExpr AST.BinaryExpr, env Environment) RuntimeVal {
+func Eval_binary_expr(binaryExpr AST.BinaryExpr, env *Environment) RuntimeVal {
 	var lhs RuntimeVal = Evaluate(binaryExpr.Left, env)
 
 	var rhs RuntimeVal = Evaluate(binaryExpr.Right, env)
@@ -184,12 +184,12 @@ func Eval_binary_expr_number(operator string, lhs RuntimeVal, rhs RuntimeVal) Ru
 	return MK_NULL()
 }
 
-func Eval_identifier(identifier AST.Identifier, env Environment) RuntimeVal {
+func Eval_identifier(identifier AST.Identifier, env *Environment) RuntimeVal {
 	value := env.LookupVar(identifier.Symbol)
 	return value
 }
 
-func Eval_assignment_expr(assignmentExpr AST.AssignmentExpr, env Environment) RuntimeVal {
+func Eval_assignment_expr(assignmentExpr AST.AssignmentExpr, env *Environment) RuntimeVal {
 	if assignmentExpr.Left.Kind() != AST.IdentifierType {
 		fmt.Println("Error: Invalid Assignment")
 		os.Exit(1)
@@ -200,7 +200,7 @@ func Eval_assignment_expr(assignmentExpr AST.AssignmentExpr, env Environment) Ru
 	return env.AssignVar(varName, Evaluate(assignmentExpr.Right, env))
 }
 
-func Eval_object_expr(objectLiteral AST.ObjectLiteral, env Environment) RuntimeVal {
+func Eval_object_expr(objectLiteral AST.ObjectLiteral, env *Environment) RuntimeVal {
 	properties := make(map[string]RuntimeVal)
 
 	for _, property := range objectLiteral.Properties {
@@ -214,7 +214,7 @@ func Eval_object_expr(objectLiteral AST.ObjectLiteral, env Environment) RuntimeV
 	return ObjectVal{TypeVal: ObjectType, Properties: properties}
 }
 
-func Eval_call_expr(callExpr AST.CallExpr, env Environment) RuntimeVal {
+func Eval_call_expr(callExpr AST.CallExpr, env *Environment) RuntimeVal {
 	var args []RuntimeVal
 
 	for _, arg := range callExpr.Arguments {
@@ -227,12 +227,12 @@ func Eval_call_expr(callExpr AST.CallExpr, env Environment) RuntimeVal {
 	switch caller := caller.(type) {
 	case NativeFuncVal:
 		if caller.Type() == NativeFuncType {
-			result := caller.Call(args, &env)
+			result := caller.Call(args, env)
 			return result
 		}
 
 	case FunctionVal:
-		scope := NewEnvironment(&env)
+		scope := NewEnvironment(env)
 
 		if len(caller.Parameters) != len(args) {
 			return MK_NULL()
@@ -244,9 +244,9 @@ func Eval_call_expr(callExpr AST.CallExpr, env Environment) RuntimeVal {
 
 		var result RuntimeVal = MK_NULL()
 
-		result = Evaluate(caller.Body, *scope)
+		result = Evaluate(caller.Body, scope)
 
-		return result
+		return result.(ReturnVal).Value
 	}
 	return MK_NULL()
 }

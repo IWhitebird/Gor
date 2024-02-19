@@ -1,0 +1,19 @@
+fn checkPrime(n) {
+    for(let i = 2; i < n; i = i + 1){
+        if(n % i == 0){
+            return false
+        }
+    }
+    return true
+}
+
+fn printPrime(n) {
+    for(let i = 2; i < n; i = i + 1){
+        if(checkPrime(i)){
+            print(i)
+        }
+    }
+}
+
+printPrime(10000)
+

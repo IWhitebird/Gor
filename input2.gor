@@ -16,3 +16,16 @@ let one = 0
 }
 
 series()
+
+fn tolo() {
+    if (100 > 550) {
+        if (200 > 500) {
+            return 10
+        }
+        return 1
+    }
+    return 30
+}
+
+const resp = tolo()
+print(resp)
