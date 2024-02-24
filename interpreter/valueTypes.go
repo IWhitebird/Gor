@@ -12,6 +12,7 @@ const (
 	StringType     ValueType = "string"
 	BoolType       ValueType = "bool"
 	ObjectType     ValueType = "object"
+	VectorType     ValueType = "vector"
 	NativeFuncType ValueType = "nativeFunc"
 	FunctionType   ValueType = "function"
 	ReturnType     ValueType = "return"
@@ -55,6 +56,15 @@ type BoolVal struct {
 
 func (b BoolVal) Type() ValueType {
 	return b.TypeVal
+}
+
+type VectorVal struct {
+	TypeVal  ValueType
+	Elements []RuntimeVal
+}
+
+func (v VectorVal) Type() ValueType {
+	return v.TypeVal
 }
 
 type ObjectVal struct {
@@ -148,7 +158,6 @@ func MK_STRING(values ...string) StringVal {
 
 func MK_BOOL(values ...bool) BoolVal {
 	var value bool
-
 	if len(values) > 0 {
 		value = values[0]
 	} else {
@@ -157,7 +166,7 @@ func MK_BOOL(values ...bool) BoolVal {
 	}
 
 	return BoolVal{
-		TypeVal: "BoolType",
+		TypeVal: BoolType,
 		Value:   value,
 	}
 }

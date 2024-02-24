@@ -1,0 +1,75 @@
+[
+  {
+    "KindValue": "VariableDeclaration",
+    "Constant": true,
+    "Identifier": "a",
+    "Value": {
+      "KindValue": "VectorLiteral",
+      "Elements": [
+        {
+          "KindValue": "NumericLiteral",
+          "Value": 10
+        },
+        {
+          "KindValue": "NumericLiteral",
+          "Value": 1
+        },
+        {
+          "KindValue": "NumericLiteral",
+          "Value": 41
+        },
+        {
+          "KindValue": "BinaryExpr",
+          "Left": {
+            "KindValue": "NumericLiteral",
+            "Value": 50
+          },
+          "Right": {
+            "KindValue": "NumericLiteral",
+            "Value": 41
+          },
+          "Operator": "+"
+        }
+      ]
+    }
+  },
+  {
+    "KindValue": "VariableDeclaration",
+    "Constant": true,
+    "Identifier": "b",
+    "Value": {
+      "KindValue": "ObjectLiteral",
+      "Properties": [
+        {
+          "KindValue": "Property",
+          "Key": "t1",
+          "Value": {
+            "KindValue": "StringLiteral",
+            "Value": "gelo"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "KindValue": "CallExpr",
+    "Caller": {
+      "KindValue": "Identifier",
+      "Symbol": "print"
+    },
+    "Arguments": [
+      {
+        "KindValue": "MemberExpr",
+        "Object": {
+          "KindValue": "Identifier",
+          "Symbol": "b"
+        },
+        "Property": {
+          "KindValue": "Identifier",
+          "Symbol": "t1"
+        },
+        "Computed": false
+      }
+    ]
+  }
+]

@@ -13,11 +13,13 @@ const (
 	FunctionDeclarationType NodeType = "FunctionDeclaration"
 
 	// Expressions
+	IndexExprType      NodeType = "IndexExpr"
 	AssignmentExprType NodeType = "AssignmentExpr"
 	MemberExprType     NodeType = "MemberExpr"
 	CallExprType       NodeType = "CallExpr"
 
 	// Literals
+	VectorLiteralType  NodeType = "VectorLiteral"
 	OjectLiteralType   NodeType = "ObjectLiteral"
 	PropertyType       NodeType = "Property"
 	NumericLiteralType NodeType = "NumericLiteral"
@@ -259,4 +261,31 @@ type CallExpr struct {
 
 func (c CallExpr) Kind() NodeType {
 	return c.KindValue
+}
+
+/*
+VectorLiteral represents a vector literal inside the source code.
+*/
+
+type VectorLiteral struct {
+	KindValue NodeType
+	Elements  []Expr
+}
+
+func (vc VectorLiteral) Kind() NodeType {
+	return vc.KindValue
+}
+
+/*
+IndexExpr represents an index expression inside the source code.
+*/
+
+type IndexExpr struct {
+	KindValue NodeType
+	Array     Expr
+	Index     Expr
+}
+
+func (ie IndexExpr) Kind() NodeType {
+	return ie.KindValue
 }

@@ -78,6 +78,25 @@ func (p *Parser) parseStmt() AST.Stmt {
 	}
 }
 
+func (p *Parser) parseVectorDeclaration() AST.Stmt {
+
+	p.consume()
+
+	var elements []AST.Expr = []AST.Expr{}
+
+	for p.not_Eof() && p.peek().Type != LEX.CloseBracket {
+		elements = append(elements, p.parseExpr())
+
+		if p.peek().Type != LEX.CloseBracket {
+			p.expect(LEX.Comma, "Error: Missing Comma")
+		}
+	}
+
+	p.expect(LEX.CloseBracket, "Error: Missing Closing Bracket")
+
+	return AST.VectorLiteral{KindValue: AST.VectorLiteralType, Elements: elements}
+}
+
 func (p *Parser) parseReturnStatement() AST.Stmt {
 	p.consume()
 	value := p.parseExpr()
@@ -227,8 +246,6 @@ func (p *Parser) parseAndStatement() AST.Expr {
 
 func (p *Parser) parseOjbectExpr() AST.Expr {
 
-	// NO OPEN BRACE
-
 	if p.peek().Type != LEX.OpenBrace {
 		return p.parseAndStatement()
 	}
@@ -292,7 +309,7 @@ func (p *Parser) parseMultiplicativeExpr() AST.Expr {
 }
 
 func (p *Parser) parseCallMemberExpr() AST.Expr {
-	member := p.parseMemberExpr()
+	member := p.parseMemberAndVectorExpr()
 
 	if p.peek().Type == LEX.OpenParenthesis {
 		return p.parseCallExpr(member)
@@ -335,34 +352,35 @@ func (p *Parser) parseArgumentsList() []AST.Expr {
 	return args
 }
 
-func (p *Parser) parseMemberExpr() AST.Expr {
+func (p *Parser) parseMemberAndVectorExpr() AST.Expr {
 	var object AST.Expr = p.parsePrimaryExpr()
 
 	for p.peek().Type == LEX.Dot || p.peek().Type == LEX.OpenBracket {
 
 		operator := p.consume()
-		var property AST.Expr
-		var computed bool
 
 		if operator.Type == LEX.Dot {
 
-			property = p.parsePrimaryExpr()
-			computed = false
+			property := p.parsePrimaryExpr()
+			computed := false
 
 			if property.Kind() != AST.IdentifierType {
 				fmt.Println("Error: Property must be an Identifier")
 				os.Exit(1)
 			}
 
+			object = AST.MemberExpr{KindValue: "MemberExpr", Object: object, Property: property, Computed: computed}
+
 		}
 
 		if operator.Type == LEX.OpenBracket {
-			property = p.parseExpr()
-			computed = true
+			index := p.parsePrimaryExpr()
+
+			object = AST.IndexExpr{KindValue: "IndexExpr", Array: object, Index: index}
+
 			p.expect(LEX.CloseBracket, "Error: Missing Closing Bracket")
 		}
 
-		object = AST.MemberExpr{KindValue: "MemberExpr", Object: object, Property: property, Computed: computed}
 	}
 
 	return object
@@ -379,11 +397,14 @@ func (p *Parser) parsePrimaryExpr() AST.Expr {
 		return AST.NumericLiteral{KindValue: "NumericLiteral", Value: p.parseInt(p.consume().Value)}
 	case LEX.String:
 		return AST.StringLiteral{KindValue: "StringLiteral", Value: p.consume().Value}
+	case LEX.OpenBracket:
+		return p.parseVectorDeclaration()
 	case LEX.OpenParenthesis:
 		p.consume()
 		expr := p.parseExpr()
 		p.expect(LEX.CloseParenthesis, "Error: Missing Closing Parenthesis")
 		return expr
+
 	default:
 		fmt.Println("Error: Invalid Token")
 		os.Exit(1)

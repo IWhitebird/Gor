@@ -17,8 +17,14 @@ func Evaluate(astNode AST.Stmt, env *Environment) RuntimeVal {
 		return StringVal{TypeVal: StringType, Value: astNode.(AST.StringLiteral).Value}
 	case AST.ReturnStmtType:
 		return ReturnVal{TypeVal: ReturnType, Value: Evaluate(astNode.(AST.ReturnStmt).Value, env)}
+	case AST.VectorLiteralType:
+		return Eval_vector_expr(astNode.(AST.VectorLiteral), env)
+	case AST.IndexExprType:
+		return Eval_index_expr(astNode.(AST.IndexExpr), env)
 	case AST.OjectLiteralType:
 		return Eval_object_expr(astNode.(AST.ObjectLiteral), env)
+	case AST.MemberExprType:
+		return Eval_member_expr(astNode.(AST.MemberExpr), env)
 	case AST.CallExprType:
 		return Eval_call_expr(astNode.(AST.CallExpr), env)
 	case AST.AssignmentExprType:

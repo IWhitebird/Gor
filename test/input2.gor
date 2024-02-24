@@ -29,3 +29,18 @@ fn tolo() {
 
 const resp = tolo()
 print(resp)
+
+
+fn fact(n) {
+    if(n == 0) {
+        return 1
+    }
+
+    return n + fact(n - 1)
+}
+
+let resp = fact(2500)
+
+print(resp)
+print("yol")
+

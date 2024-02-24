@@ -250,3 +250,44 @@ func Eval_call_expr(callExpr AST.CallExpr, env *Environment) RuntimeVal {
 	}
 	return MK_NULL()
 }
+
+func Eval_member_expr(memberExpr AST.MemberExpr, env *Environment) RuntimeVal {
+
+	var object RuntimeVal = MK_NULL()
+
+	if memberExpr.Object.Kind() == AST.IdentifierType {
+		object = env.LookupVar(memberExpr.Object.(AST.Identifier).Symbol)
+	} else if memberExpr.Object.Kind() == AST.MemberExprType {
+		object = Eval_member_expr(memberExpr.Object.(AST.MemberExpr), env)
+	}
+
+	if memberExpr.Property.Kind() == AST.IdentifierType {
+		return object.(ObjectVal).Properties[memberExpr.Property.(AST.Identifier).Symbol]
+	}
+
+	fmt.Println("Error: Invalid Member Expression")
+	return object
+}
+
+func Eval_vector_expr(vectorLiteral AST.VectorLiteral, env *Environment) RuntimeVal {
+	var elements []RuntimeVal
+
+	for _, element := range vectorLiteral.Elements {
+		evaluatedElement := Evaluate(element, env)
+		elements = append(elements, evaluatedElement)
+	}
+
+	return VectorVal{TypeVal: VectorType, Elements: elements}
+}
+
+func Eval_index_expr(indexExpr AST.IndexExpr, env *Environment) RuntimeVal {
+	array := Evaluate(indexExpr.Array, env)
+	index := Evaluate(indexExpr.Index, env)
+
+	if array.Type() == VectorType && index.Type() == NumberType {
+		return array.(VectorVal).Elements[int(index.(NumberVal).Value)]
+	}
+
+	fmt.Println("Error: Invalid Index Expression")
+	return MK_NULL()
+}

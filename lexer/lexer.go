@@ -129,7 +129,7 @@ func Tokenize(inputToken string) []Token {
 			switch t {
 			case "#":
 				for j := i + 1; j < len(inputToken); j++ {
-					if inputToken[j:j+1] == "\n" {
+					if inputToken[j:j+1] == "\n" || inputToken[j:j+1] == "\r" || j == len(inputToken)-1 {
 						i = j
 						break
 					}
@@ -221,7 +221,7 @@ func Tokenize(inputToken string) []Token {
 				} else if isAlpha(t) {
 					var identifier string = t
 					for j := i + 1; j < len(inputToken); j++ {
-						if isAlpha(inputToken[j : j+1]) {
+						if isAlpha(inputToken[j:j+1]) || isNumber(inputToken[j:j+1]) {
 							identifier += inputToken[j : j+1]
 							i++
 						} else {

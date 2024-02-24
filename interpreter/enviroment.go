@@ -74,7 +74,6 @@ func EnviromentSetup() *Environment {
 	parentEnv.DeclareVar("false", MK_BOOL(false))
 
 	parentEnv.DeclareVar("print", MK_NATIVE_FUNC(func(args []RuntimeVal, env *Environment) RuntimeVal {
-
 		for _, arg := range args {
 			if arg.Type() == NumberType {
 				stdout := MK_NUMBER(arg.(NumberVal).Value)
@@ -88,6 +87,10 @@ func EnviromentSetup() *Environment {
 				stdout := MK_STRING(arg.(StringVal).Value)
 				fmt.Println(stdout.Value)
 				return stdout
+			} else if arg.Type() == ObjectType {
+				stdout := MK_OBJECT(arg.(ObjectVal).Properties)
+				fmt.Println(stdout.Properties)
+				return stdout
 			}
 
 		}
@@ -98,9 +101,7 @@ func EnviromentSetup() *Environment {
 	))
 
 	parentEnv.DeclareVar("swap", MK_NATIVE_FUNC(func(args []RuntimeVal, env *Environment) RuntimeVal {
-
 		fmt.Println(args)
-
 		return MK_NULL()
 	},
 	))

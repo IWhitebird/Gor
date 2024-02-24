@@ -1,19 +1,12 @@
-fn checkPrime(n) {
-    for(let i = 2; i < n; i = i + 1){
-        if(n % i == 0){
-            return false
-        }
+fn fact(n) {
+    if(n == 0) {
+        return 1
     }
-    return true
+
+    return n + fact(n - 1)
 }
 
-fn printPrime(n) {
-    for(let i = 2; i < n; i = i + 1){
-        if(checkPrime(i)){
-            print(i)
-        }
-    }
-}
+let resp = fact(2500)
 
-printPrime(10000)
-
+print(resp)
+print("yol")

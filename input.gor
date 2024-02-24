@@ -1,12 +1,7 @@
-fn fact(n) {
-    if(n == 0) {
-        return 1
-    }
+const a = [10 ,1 , 41 ,50 + 41]
 
-    return n * fact(n - 1)
-}
+const b = {
+    t1 : "gelo"
+} 
 
-let resp = fact(20)
-
-print(resp)
-print("yol")
+print(b.t1)
