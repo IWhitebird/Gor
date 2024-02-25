@@ -1,7 +1,9 @@
-const a = [10 ,1 , 41 ,50 + 41]
+let a = {
+    holo : {
+        my : "gg"
+    }
+}
 
-const b = {
-    t1 : "gelo"
-} 
+a.holo.my = "hhhh"
 
-print(b.t1)
+print(a)

@@ -223,7 +223,6 @@ func (p *Parser) parseExpr() AST.Expr {
 
 func (p *Parser) parseAssignmentExpr() AST.Expr {
 	left := p.parseOjbectExpr()
-
 	if p.peek().Type == LEX.Equals {
 		p.consume()
 		right := p.parseAssignmentExpr()

@@ -190,14 +190,25 @@ func Eval_identifier(identifier AST.Identifier, env *Environment) RuntimeVal {
 }
 
 func Eval_assignment_expr(assignmentExpr AST.AssignmentExpr, env *Environment) RuntimeVal {
-	if assignmentExpr.Left.Kind() != AST.IdentifierType {
-		fmt.Println("Error: Invalid Assignment")
-		os.Exit(1)
+
+	switch assignmentExpr.Left.Kind() {
+
+	case AST.IdentifierType:
+		return env.AssignVar(assignmentExpr.Left.(AST.Identifier).Symbol, Evaluate(assignmentExpr.Right, env))
+	case AST.MemberExprType:
+		var object RuntimeVal = MK_NULL()
+		object = Eval_assign_member_expr(assignmentExpr.Left.(AST.MemberExpr), env)
+		object.(ObjectVal).Properties[assignmentExpr.Left.(AST.MemberExpr).Property.(AST.Identifier).Symbol] = Evaluate(assignmentExpr.Right, env)
+		return object
+	case AST.IndexExprType:
+		array := Evaluate(assignmentExpr.Left.(AST.IndexExpr).Array, env)
+		index := Evaluate(assignmentExpr.Left.(AST.IndexExpr).Index, env)
+		array.(VectorVal).Elements[int(index.(NumberVal).Value)] = Evaluate(assignmentExpr.Right, env)
+		return array
 	}
-
-	varName := assignmentExpr.Left.(AST.Identifier).Symbol
-
-	return env.AssignVar(varName, Evaluate(assignmentExpr.Right, env))
+	fmt.Println("Error: Invalid Assignment")
+	os.Exit(1)
+	return MK_NULL()
 }
 
 func Eval_object_expr(objectLiteral AST.ObjectLiteral, env *Environment) RuntimeVal {
@@ -263,6 +274,24 @@ func Eval_member_expr(memberExpr AST.MemberExpr, env *Environment) RuntimeVal {
 
 	if memberExpr.Property.Kind() == AST.IdentifierType {
 		return object.(ObjectVal).Properties[memberExpr.Property.(AST.Identifier).Symbol]
+	}
+
+	fmt.Println("Error: Invalid Member Expression")
+	return object
+}
+
+func Eval_assign_member_expr(memberExpr AST.MemberExpr, env *Environment) RuntimeVal {
+
+	var object RuntimeVal = MK_NULL()
+
+	if memberExpr.Object.Kind() == AST.IdentifierType {
+		object = env.LookupVar(memberExpr.Object.(AST.Identifier).Symbol)
+	} else if memberExpr.Object.Kind() == AST.MemberExprType {
+		object = Eval_member_expr(memberExpr.Object.(AST.MemberExpr), env)
+	}
+
+	if memberExpr.Property.Kind() == AST.IdentifierType {
+		return object
 	}
 
 	fmt.Println("Error: Invalid Member Expression")

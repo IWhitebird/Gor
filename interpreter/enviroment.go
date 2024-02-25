@@ -89,7 +89,9 @@ func EnviromentSetup() *Environment {
 				return stdout
 			} else if arg.Type() == ObjectType {
 				stdout := MK_OBJECT(arg.(ObjectVal).Properties)
-				fmt.Println(stdout.Properties)
+				//Convert map to json
+				convertedJson := ConvertMapToJson(stdout.Properties)
+				fmt.Println(convertedJson)
 				return stdout
 			}
 

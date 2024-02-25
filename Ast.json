@@ -1,54 +1,56 @@
 [
   {
     "KindValue": "VariableDeclaration",
-    "Constant": true,
+    "Constant": false,
     "Identifier": "a",
-    "Value": {
-      "KindValue": "VectorLiteral",
-      "Elements": [
-        {
-          "KindValue": "NumericLiteral",
-          "Value": 10
-        },
-        {
-          "KindValue": "NumericLiteral",
-          "Value": 1
-        },
-        {
-          "KindValue": "NumericLiteral",
-          "Value": 41
-        },
-        {
-          "KindValue": "BinaryExpr",
-          "Left": {
-            "KindValue": "NumericLiteral",
-            "Value": 50
-          },
-          "Right": {
-            "KindValue": "NumericLiteral",
-            "Value": 41
-          },
-          "Operator": "+"
-        }
-      ]
-    }
-  },
-  {
-    "KindValue": "VariableDeclaration",
-    "Constant": true,
-    "Identifier": "b",
     "Value": {
       "KindValue": "ObjectLiteral",
       "Properties": [
         {
           "KindValue": "Property",
-          "Key": "t1",
+          "Key": "holo",
           "Value": {
-            "KindValue": "StringLiteral",
-            "Value": "gelo"
+            "KindValue": "ObjectLiteral",
+            "Properties": [
+              {
+                "KindValue": "Property",
+                "Key": "my",
+                "Value": {
+                  "KindValue": "StringLiteral",
+                  "Value": "gg"
+                }
+              }
+            ]
           }
         }
       ]
+    }
+  },
+  {
+    "KindValue": "AssignmentExpr",
+    "Left": {
+      "KindValue": "MemberExpr",
+      "Object": {
+        "KindValue": "MemberExpr",
+        "Object": {
+          "KindValue": "Identifier",
+          "Symbol": "a"
+        },
+        "Property": {
+          "KindValue": "Identifier",
+          "Symbol": "holo"
+        },
+        "Computed": false
+      },
+      "Property": {
+        "KindValue": "Identifier",
+        "Symbol": "my"
+      },
+      "Computed": false
+    },
+    "Right": {
+      "KindValue": "StringLiteral",
+      "Value": "hhhh"
     }
   },
   {
@@ -59,16 +61,8 @@
     },
     "Arguments": [
       {
-        "KindValue": "MemberExpr",
-        "Object": {
-          "KindValue": "Identifier",
-          "Symbol": "b"
-        },
-        "Property": {
-          "KindValue": "Identifier",
-          "Symbol": "t1"
-        },
-        "Computed": false
+        "KindValue": "Identifier",
+        "Symbol": "a"
       }
     ]
   }

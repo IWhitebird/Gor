@@ -106,10 +106,9 @@ func Eval_for_statement(declaration AST.ForStmt, env *Environment) RuntimeVal {
 
 	for {
 
-		Eval_assignment_expr(update.(AST.AssignmentExpr), newenv)
-
 		new_newenv := NewEnvironment(newenv)
 		Eval_body(body, new_newenv, false)
+		Eval_assignment_expr(update.(AST.AssignmentExpr), newenv)
 
 		test = Evaluate(declaration.Test, newenv)
 

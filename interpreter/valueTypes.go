@@ -2,6 +2,7 @@ package interpreter
 
 import (
 	AST "Gor/ast"
+	"encoding/json"
 )
 
 type ValueType string
@@ -210,4 +211,22 @@ func RuntimeVal_Wrapper(val RuntimeVal) interface{} {
 
 	// Return a default value in case the type is not recognized
 	return nil
+}
+
+func ConvertRuntimeValToMap(inputMap map[string]RuntimeVal) map[string]interface{} {
+	newMap := make(map[string]interface{})
+	for key, value := range inputMap {
+		if value.Type() == ObjectType {
+			newMap[key] = ConvertRuntimeValToMap(value.(ObjectVal).Properties)
+		} else {
+			newMap[key] = RuntimeVal_Wrapper(value)
+		}
+	}
+	return newMap
+}
+
+func ConvertMapToJson(inputMap map[string]RuntimeVal) string {
+	newMap := ConvertRuntimeValToMap(inputMap)
+	jsonData, _ := json.Marshal(newMap)
+	return string(jsonData)
 }
