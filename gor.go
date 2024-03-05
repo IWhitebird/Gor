@@ -1,4 +1,4 @@
-package main
+package Gor
 
 import (
 	ITR "github.com/iwhitebird/Gor/interpreter"
