@@ -1,3 +1,3 @@
 module github.com/iwhitebird/Gor
 
-go 1.22
+go 1.22.0
