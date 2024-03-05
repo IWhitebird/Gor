@@ -1,14 +1,10 @@
-package main
+package Gor
 
 import (
 	ITR "github.com/iwhitebird/Gor/interpreter"
 	PSR "github.com/iwhitebird/Gor/parser"
 	PGM "github.com/iwhitebird/Gor/program"
 )
-
-func main() {
-	New()
-}
 
 func New() {
 	var env = ITR.EnviromentSetup()
