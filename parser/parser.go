@@ -1,11 +1,12 @@
 package parser
 
 import (
-	AST "Gor/ast"
-	LEX "Gor/lexer"
 	"fmt"
 	"os"
 	"strconv"
+
+	AST "github.com/iwhitebird/Gor/ast"
+	LEX "github.com/iwhitebird/Gor/lexer"
 )
 
 type Parser struct {

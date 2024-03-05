@@ -1,9 +1,10 @@
 package interpreter
 
 import (
-	AST "Gor/ast"
 	"fmt"
 	"os"
+
+	AST "github.com/iwhitebird/Gor/ast"
 )
 
 func Evaluate(astNode AST.Stmt, env *Environment) RuntimeVal {

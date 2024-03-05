@@ -1,13 +1,14 @@
 package program
 
 import (
-	ITR "Gor/interpreter"
-	PSR "Gor/parser"
 	"bufio"
 	"encoding/json"
 	"fmt"
 	"log"
 	"os"
+
+	ITR "github.com/iwhitebird/Gor/interpreter"
+	PSR "github.com/iwhitebird/Gor/parser"
 )
 
 func CompleteFile(parser PSR.Parser, env *ITR.Environment) {

@@ -1,8 +1,9 @@
 package interpreter
 
 import (
-	AST "Gor/ast"
 	"encoding/json"
+
+	AST "github.com/iwhitebird/Gor/ast"
 )
 
 type ValueType string

@@ -1,10 +1,11 @@
 package interpreter
 
 import (
-	AST "Gor/ast"
 	"fmt"
 	"os"
 	"reflect"
+
+	AST "github.com/iwhitebird/Gor/ast"
 )
 
 func Eval_binary_expr(binaryExpr AST.BinaryExpr, env *Environment) RuntimeVal {

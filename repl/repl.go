@@ -1,13 +1,14 @@
 package repl
 
 import (
-	ITR "Gor/interpreter"
-	PSR "Gor/parser"
 	"bufio"
 	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
+
+	ITR "github.com/iwhitebird/Gor/interpreter"
+	PSR "github.com/iwhitebird/Gor/parser"
 )
 
 func Repl(parser PSR.Parser, env *ITR.Environment) {
