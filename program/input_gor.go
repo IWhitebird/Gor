@@ -8,20 +8,19 @@ import (
 	PSR "github.com/iwhitebird/Gor/parser"
 )
 
-func CompleteInput(input string) ([2]interface{}, error) {
+func CompleteInput(input string) (string, error) {
 	var env = ITR.EnviromentSetup()
 	var parser = PSR.Parser{}
+
 	program := parser.ProduceAst(input)
 
 	bodyJSON, err := json.MarshalIndent(program.Body, "", "  ")
 	if err != nil {
 		fmt.Println("Error marshaling JSON:", err)
-		return [2]interface{}{}, err
+		return "", err
 	}
 
-	evaluatedProgram := ITR.Evaluate(program, env)
+	ITR.Evaluate(program, env)
 
-	data := [2]interface{}{evaluatedProgram, string(bodyJSON)}
-
-	return data, nil
+	return string(bodyJSON), nil
 }

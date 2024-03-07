@@ -1,35 +1,21 @@
 package Gor
 
 import (
-	"fmt"
-
 	ITR "github.com/iwhitebird/Gor/interpreter"
 	PSR "github.com/iwhitebird/Gor/parser"
 	PGM "github.com/iwhitebird/Gor/program"
 )
 
-func Repl() <-chan [2]interface{} {
+func Repl() {
 	var env = ITR.EnviromentSetup()
 	var parser = PSR.Parser{}
-	resultChan := PGM.Repl(parser, env)
-	return resultChan
+	PGM.Repl(parser, env)
 }
 
-func RunFromInput(input string) interface{} {
-	data, err := PGM.CompleteInput(input)
-
-	if err != nil {
-		fmt.Println("Error:", err)
-		return nil
-	}
-	return data
+func RunFromInput(input string) (string, error) {
+	return PGM.CompleteInput(input)
 }
 
-func RunFromFile(file_path string) interface{} {
-	data, err := PGM.CompleteFile(file_path)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return nil
-	}
-	return data
+func RunFromFile(file_path string) (string, error) {
+	return PGM.CompleteFile(file_path)
 }

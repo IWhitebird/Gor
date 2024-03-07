@@ -10,7 +10,7 @@ import (
 	PSR "github.com/iwhitebird/Gor/parser"
 )
 
-func CompleteFile(file_path string) ([2]interface{}, error) {
+func CompleteFile(file_path string) (string, error) {
 
 	var env = ITR.EnviromentSetup()
 	var parser = PSR.Parser{}
@@ -25,10 +25,10 @@ func CompleteFile(file_path string) ([2]interface{}, error) {
 	bodyJSON, err := json.MarshalIndent(program.Body, "", "  ")
 	if err != nil {
 		fmt.Println("Error marshaling JSON:", err)
-		return [2]interface{}{}, err
+		return "", err
 	}
 
-	data := ITR.Evaluate(program, env)
+	ITR.Evaluate(program, env)
 
-	return [2]interface{}{data, string(bodyJSON)}, nil
+	return string(bodyJSON), nil
 }
