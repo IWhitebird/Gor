@@ -3,24 +3,36 @@ package program
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"os"
 
 	ITR "github.com/iwhitebird/Gor/interpreter"
 	PSR "github.com/iwhitebird/Gor/parser"
 )
 
-func CompleteInput(input string) (string, error) {
+func CompleteInput(input string) (string, string, error) {
 	var env = ITR.EnviromentSetup()
 	var parser = PSR.Parser{}
 
 	program := parser.ProduceAst(input)
 
-	bodyJSON, err := json.MarshalIndent(program.Body, "", "  ")
-	if err != nil {
-		fmt.Println("Error marshaling JSON:", err)
-		return "", err
-	}
+	// Redirect stdout to a buffer
+	// Redirect stdout to a buffer
+	rescueStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
 
 	ITR.Evaluate(program, env)
 
-	return string(bodyJSON), nil
+	w.Close()
+	out, _ := io.ReadAll(r)
+	os.Stdout = rescueStdout
+
+	bodyJSON, err := json.MarshalIndent(program.Body, "", "  ")
+	if err != nil {
+		fmt.Println("Error marshaling JSON:", err)
+		return "", "", err
+	}
+
+	return string(out), string(bodyJSON), nil
 }
