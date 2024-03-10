@@ -1,3 +1,4 @@
+![gor](https://github.com/IWhitebird/Gor/assets/115157819/37a84bbc-7c71-4be9-91cf-ca3179399481)
 # Gor Language
 
 Gor is interpreted programming langauge made with Golang. It has similar syntax to that of JavaScript.
