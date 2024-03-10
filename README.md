@@ -1,4 +1,5 @@
-![gor](https://github.com/IWhitebird/Gor/assets/115157819/37a84bbc-7c71-4be9-91cf-ca3179399481)
+<img src="https://github.com/IWhitebird/Gor/assets/115157819/37a84bbc-7c71-4be9-91cf-ca3179399481.png" width="200" height="200">
+
 # Gor Language
 
 Gor is interpreted programming langauge made with Golang. It has similar syntax to that of JavaScript.
@@ -18,12 +19,11 @@ print(a)
 
 ## Arithmetic operators & logical operators:
 ```
-- `+`, `-`, `*`, `/`, `,`, `&`, `|`
++, - , *, / , &, |
 ```
-
 ## Comparison operators:
 ```
-- `==`, `<=`, `>=`, `!=`, `&&`, `||`
+==, <=, >=, !=, &&, ||
 ```
 
 ## Array and object declaration:
@@ -38,7 +38,7 @@ print(b.hi)
 ```
 
 ## Function declaration:
-- Functions can be declared using fn keyword 
+- Functions can be declared using `fn` keyword 
 ```
 fn myFunc(a, b) {
     return a + b
@@ -56,5 +56,5 @@ for (let i = 0; i < 10; i = i + 1) {
 
 ## Future Updates:
 - While loop
-- Unary operators (--, ++)
+- Unary operators (`--`, `++`)
 - Multithreading
