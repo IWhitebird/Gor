@@ -1,0 +1,176 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Gor",
+  "scopeName": "source.gor",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#strings" },
+    { "include": "#numbers" },
+    { "include": "#constants" },
+    { "include": "#keywords" },
+    { "include": "#function-declaration" },
+    { "include": "#function-call" },
+    { "include": "#operators" },
+    { "include": "#punctuation" },
+    { "include": "#identifiers" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.gor",
+          "match": "#.*$"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.gor",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": []
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.integer.gor",
+          "match": "\\b[0-9]+\\b"
+        }
+      ]
+    },
+    "constants": {
+      "patterns": [
+        {
+          "name": "constant.language.boolean.true.gor",
+          "match": "\\btrue\\b"
+        },
+        {
+          "name": "constant.language.boolean.false.gor",
+          "match": "\\bfalse\\b"
+        },
+        {
+          "name": "constant.language.null.gor",
+          "match": "\\bnull\\b"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "storage.type.gor",
+          "match": "\\b(let|const)\\b"
+        },
+        {
+          "name": "keyword.control.conditional.gor",
+          "match": "\\b(if|else)\\b"
+        },
+        {
+          "name": "keyword.control.loop.gor",
+          "match": "\\bfor\\b"
+        },
+        {
+          "name": "keyword.control.return.gor",
+          "match": "\\breturn\\b"
+        },
+        {
+          "name": "storage.type.function.gor",
+          "match": "\\bfn\\b"
+        }
+      ]
+    },
+    "function-declaration": {
+      "patterns": [
+        {
+          "match": "\\b(fn)\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\s*\\(",
+          "captures": {
+            "1": { "name": "storage.type.function.gor" },
+            "2": { "name": "entity.name.function.gor" }
+          }
+        }
+      ]
+    },
+    "function-call": {
+      "patterns": [
+        {
+          "match": "\\b(print|swap)\\s*\\(",
+          "captures": {
+            "1": { "name": "support.function.builtin.gor" }
+          }
+        },
+        {
+          "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\s*\\(",
+          "captures": {
+            "1": { "name": "entity.name.function.call.gor" }
+          }
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.comparison.gor",
+          "match": "==|!=|<=|>=|<|>"
+        },
+        {
+          "name": "keyword.operator.logical.gor",
+          "match": "&&|\\|\\|"
+        },
+        {
+          "name": "keyword.operator.assignment.gor",
+          "match": "="
+        },
+        {
+          "name": "keyword.operator.arithmetic.gor",
+          "match": "[+\\-*/%]"
+        },
+        {
+          "name": "keyword.operator.bitwise.gor",
+          "match": "[&|]"
+        }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
+        {
+          "name": "punctuation.separator.comma.gor",
+          "match": ","
+        },
+        {
+          "name": "punctuation.terminator.semicolon.gor",
+          "match": ";"
+        },
+        {
+          "name": "punctuation.separator.colon.gor",
+          "match": ":"
+        },
+        {
+          "name": "punctuation.accessor.dot.gor",
+          "match": "\\."
+        },
+        {
+          "name": "punctuation.definition.block.gor",
+          "match": "[{}]"
+        },
+        {
+          "name": "punctuation.definition.bracket.gor",
+          "match": "[\\[\\]]"
+        },
+        {
+          "name": "punctuation.definition.paren.gor",
+          "match": "[()]"
+        }
+      ]
+    },
+    "identifiers": {
+      "patterns": [
+        {
+          "name": "variable.other.gor",
+          "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"
+        }
+      ]
+    }
+  }
+}

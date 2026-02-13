@@ -1,0 +1,48 @@
+{
+  "name": "gor-lang",
+  "displayName": "Gor Language",
+  "description": "Syntax highlighting for the Gor programming language",
+  "version": "0.1.0",
+  "publisher": "iwhitebird",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Themes"
+  ],
+  "icon": "icons/gor-icon.png",
+  "contributes": {
+    "languages": [
+      {
+        "id": "gor",
+        "aliases": [
+          "Gor",
+          "gor"
+        ],
+        "extensions": [
+          ".gor"
+        ],
+        "icon": {
+          "light": "./icons/gor-icon.png",
+          "dark": "./icons/gor-icon.png"
+        },
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "gor",
+        "scopeName": "source.gor",
+        "path": "./syntaxes/gor.tmLanguage.json"
+      }
+    ],
+    "iconThemes": [
+      {
+        "id": "gor-icons",
+        "label": "Gor File Icons",
+        "path": "./icons/gor-icon-theme.json"
+      }
+    ]
+  }
+}

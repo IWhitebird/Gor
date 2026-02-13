@@ -1,0 +1,10 @@
+{
+  "iconDefinitions": {
+    "gor-file": {
+      "iconPath": "./gor-icon.png"
+    }
+  },
+  "fileExtensions": {
+    "gor": "gor-file"
+  }
+}
