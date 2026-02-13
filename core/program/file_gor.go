@@ -6,8 +6,8 @@ import (
 	"log"
 	"os"
 
-	ITR "github.com/iwhitebird/Gor/interpreter"
-	PSR "github.com/iwhitebird/Gor/parser"
+	ITR "github.com/iwhitebird/Gor/core/interpreter"
+	PSR "github.com/iwhitebird/Gor/core/parser"
 )
 
 func CompleteFile(file_path string) (string, error) {

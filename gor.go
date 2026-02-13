@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	ITR "github.com/iwhitebird/Gor/interpreter"
-	PSR "github.com/iwhitebird/Gor/parser"
-	PGM "github.com/iwhitebird/Gor/program"
+	ITR "github.com/iwhitebird/Gor/core/interpreter"
+	PSR "github.com/iwhitebird/Gor/core/parser"
+	PGM "github.com/iwhitebird/Gor/core/program"
 )
 
 func Repl() {

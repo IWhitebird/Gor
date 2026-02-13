@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	AST "github.com/iwhitebird/Gor/ast"
+	AST "github.com/iwhitebird/Gor/core/ast"
 )
 
 func Evaluate(astNode AST.Stmt, env *Environment) RuntimeVal {

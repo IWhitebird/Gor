@@ -5,8 +5,8 @@ import (
 	"os"
 	"strconv"
 
-	AST "github.com/iwhitebird/Gor/ast"
-	LEX "github.com/iwhitebird/Gor/lexer"
+	AST "github.com/iwhitebird/Gor/core/ast"
+	LEX "github.com/iwhitebird/Gor/core/lexer"
 )
 
 type Parser struct {

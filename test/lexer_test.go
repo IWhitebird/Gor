@@ -3,7 +3,7 @@ package test
 import (
 	"testing"
 
-	LEX "github.com/iwhitebird/Gor/lexer"
+	LEX "github.com/iwhitebird/Gor/core/lexer"
 )
 
 func TestLexerEmptyInput(t *testing.T) {

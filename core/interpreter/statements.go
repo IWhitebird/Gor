@@ -1,7 +1,7 @@
 package interpreter
 
 import (
-	AST "github.com/iwhitebird/Gor/ast"
+	AST "github.com/iwhitebird/Gor/core/ast"
 )
 
 func Eval_program(program AST.Program, env *Environment) RuntimeVal {

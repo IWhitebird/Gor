@@ -6,8 +6,8 @@ import (
 	"io"
 	"os"
 
-	ITR "github.com/iwhitebird/Gor/interpreter"
-	PSR "github.com/iwhitebird/Gor/parser"
+	ITR "github.com/iwhitebird/Gor/core/interpreter"
+	PSR "github.com/iwhitebird/Gor/core/parser"
 )
 
 func CompleteInput(input string) (string, string, error) {

@@ -3,7 +3,7 @@ package interpreter
 import (
 	"encoding/json"
 
-	AST "github.com/iwhitebird/Gor/ast"
+	AST "github.com/iwhitebird/Gor/core/ast"
 )
 
 type ValueType int

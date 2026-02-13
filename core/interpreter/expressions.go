@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	AST "github.com/iwhitebird/Gor/ast"
+	AST "github.com/iwhitebird/Gor/core/ast"
 )
 
 func Eval_binary_expr(binaryExpr AST.BinaryExpr, env *Environment) RuntimeVal {

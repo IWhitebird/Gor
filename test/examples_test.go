@@ -85,7 +85,7 @@ func TestExampleClosurePatterns(t *testing.T) {
 }
 
 func TestBenchmarkPrimeSieve(t *testing.T) {
-	out := runFile(t, "../benchmark/prime_sieve.gor")
+	out := runFile(t, "../examples/prime_sieve.gor")
 	// There are 1229 primes under 10000
 	if !strings.Contains(out, "1229") {
 		t.Errorf("prime sieve expected 1229, got: %s", out)

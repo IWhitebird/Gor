@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	ITR "github.com/iwhitebird/Gor/interpreter"
-	PSR "github.com/iwhitebird/Gor/parser"
+	ITR "github.com/iwhitebird/Gor/core/interpreter"
+	PSR "github.com/iwhitebird/Gor/core/parser"
 )
 
 func Repl(parser PSR.Parser, env *ITR.Environment) {

@@ -1,16 +1,68 @@
-<img src="https://github.com/IWhitebird/Gor/assets/115157819/37a84bbc-7c71-4be9-91cf-ca3179399481.png" width="200" height="200">
+<img src="asset/Gor.png" width="200" height="200">
 
 # Gor Language
 
 Gor is an interpreted programming language made with Golang. It has similar syntax to that of JavaScript. Zero external dependencies — pure Go standard library.
 
-## Build & Run
+## Prerequisites
+
+- [Go](https://go.dev/dl/) 1.21 or later
+
+## Installation
 
 ```bash
-go build -o bin/gor ./cmd/gor/  # Build binary
-./bin/gor                        # Start REPL
-./bin/gor file.gor               # Run a file
-go test ./test/                  # Run tests
+git clone https://github.com/IWhitebird/Gor.git
+cd Gor
+make build
+```
+
+This builds the binary to `bin/gor`.
+
+## Usage
+
+```
+gor <file.gor>           Run a Gor source file
+gor --repl               Start the interactive REPL
+gor --ast <file.gor>     Print the AST of a source file as JSON
+gor --version            Print version
+gor --help               Show help
+```
+
+### Run a file
+
+```bash
+./bin/gor examples/fibonacci.gor
+```
+
+### Start the REPL
+
+```bash
+./bin/gor --repl
+```
+
+### Print the AST
+
+```bash
+./bin/gor --ast examples/fibonacci.gor
+```
+
+## Development
+
+```bash
+make build      # Build binary to bin/gor
+make run        # Build and start REPL
+make test       # Run test suite
+make test-v     # Run tests with verbose output
+make fmt        # Format all Go source files
+make clean      # Remove built binary
+```
+
+Or without Make:
+
+```bash
+go build -o bin/gor ./cmd/gor/
+go test ./test/ -count=1
+go fmt ./...
 ```
 
 ## Data Types
@@ -166,6 +218,25 @@ See the `examples/` folder for data structure implementations:
 - **`hash_map.gor`** — Key-value store using objects
 - **`fibonacci.gor`** — Recursive and iterative Fibonacci
 - **`closure_patterns.gor`** — Counter, adder, accumulator, getter/setter
+
+## Project Structure
+
+```
+Gor/
+├── cmd/gor/              # CLI entry point
+├── core/
+│   ├── ast/              # AST node definitions
+│   ├── lexer/            # Tokenizer
+│   ├── parser/           # Recursive descent parser
+│   ├── interpreter/      # Tree-walking evaluator
+│   └── program/          # REPL and input handling
+├── gor.go                # Public API (Repl, RunFromFile, PrintAST)
+├── examples/             # Example Gor programs
+├── test/                 # Test suite (238 tests)
+├── benchmark/            # Performance benchmarks
+├── asset/                # Logo and images
+└── Makefile
+```
 
 ## Future Updates
 
