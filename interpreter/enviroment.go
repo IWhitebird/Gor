@@ -2,6 +2,7 @@ package interpreter
 
 import (
 	"fmt"
+	"os"
 )
 
 type Environment struct {
@@ -21,6 +22,7 @@ func NewEnvironment(parentEnv *Environment) *Environment {
 func (env *Environment) DeclareVar(varname string, value RuntimeVal, optionalParams ...bool) RuntimeVal {
 	if _, exists := env.Variables[varname]; exists {
 		fmt.Println("ERROR : Cannot declare variable, As it already is defined.", varname)
+		os.Exit(1)
 	}
 
 	isConst := false
@@ -39,9 +41,10 @@ func (env *Environment) DeclareVar(varname string, value RuntimeVal, optionalPar
 func (env *Environment) AssignVar(varname string, value RuntimeVal) RuntimeVal {
 	resolvedEnv := env.Resolve(varname)
 
-	if env.Constants[varname] {
+	// FIX: check Constants on the resolved env, not the current one
+	if resolvedEnv.Constants[varname] {
 		fmt.Println("ERROR : Cannot assign to constant variable.", varname)
-		return nil
+		os.Exit(1)
 	}
 
 	resolvedEnv.Variables[varname] = value
@@ -59,10 +62,31 @@ func (env *Environment) Resolve(varname string) *Environment {
 	}
 
 	if env.ParentEnv == nil {
-		fmt.Println("ERROR Cannot resolve ,as it does not exist.", varname)
+		fmt.Println("ERROR Cannot resolve, as it does not exist.", varname)
+		os.Exit(1)
 	}
 
 	return env.ParentEnv.Resolve(varname)
+}
+
+// IsTruthy converts any RuntimeVal to a boolean for use in if/for conditions.
+func IsTruthy(val RuntimeVal) bool {
+	switch val.Type() {
+	case BoolType:
+		return val.(BoolVal).Value
+	case NumberType:
+		return val.(NumberVal).Value != 0
+	case StringType:
+		return val.(StringVal).Value != ""
+	case NullType:
+		return false
+	case ObjectType:
+		return len(val.(ObjectVal).Properties) > 0
+	case VectorType:
+		return len(val.(VectorVal).Elements) > 0
+	default:
+		return true
+	}
 }
 
 func EnviromentSetup() *Environment {
@@ -74,31 +98,35 @@ func EnviromentSetup() *Environment {
 	parentEnv.DeclareVar("false", MK_BOOL(false))
 
 	parentEnv.DeclareVar("print", MK_NATIVE_FUNC(func(args []RuntimeVal, env *Environment) RuntimeVal {
+		// FIX: print ALL arguments, not just the first one (removed early return)
 		for _, arg := range args {
-			if arg.Type() == NumberType {
-				stdout := MK_NUMBER(arg.(NumberVal).Value)
-				fmt.Println(stdout.Value)
-				return stdout
-			} else if arg.Type() == BoolType {
-				stdout := MK_BOOL(arg.(BoolVal).Value)
-				fmt.Println(stdout.Value)
-				return stdout
-			} else if arg.Type() == StringType {
-				stdout := MK_STRING(arg.(StringVal).Value)
-				fmt.Println(stdout.Value)
-				return stdout
-			} else if arg.Type() == ObjectType {
-				stdout := MK_OBJECT(arg.(ObjectVal).Properties)
-				//Convert map to json
-				convertedJson := ConvertMapToJson(stdout.Properties)
+			switch arg.Type() {
+			case NumberType:
+				fmt.Println(arg.(NumberVal).Value)
+			case BoolType:
+				fmt.Println(arg.(BoolVal).Value)
+			case StringType:
+				fmt.Println(arg.(StringVal).Value)
+			case ObjectType:
+				convertedJson := ConvertMapToJson(arg.(ObjectVal).Properties)
 				fmt.Println(convertedJson)
-				return stdout
+			case VectorType:
+				fmt.Println(arg.(VectorVal).Elements)
+			case NullType:
+				fmt.Println("null")
+			default:
+				fmt.Println(arg)
 			}
-
 		}
-		stdout := MK_NULL()
-		fmt.Println(stdout.Value)
-		return stdout
+
+		if len(args) == 0 {
+			fmt.Println("null")
+		}
+
+		if len(args) > 0 {
+			return args[len(args)-1]
+		}
+		return MK_NULL()
 	},
 	))
 

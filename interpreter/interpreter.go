@@ -13,11 +13,11 @@ func Evaluate(astNode AST.Stmt, env *Environment) RuntimeVal {
 	// Expressions
 
 	case AST.NumericLiteralType:
-		return NumberVal{TypeVal: NumberType, Value: astNode.(AST.NumericLiteral).Value}
+		return MK_NUMBER(astNode.(AST.NumericLiteral).Value)
 	case AST.StringLiteralType:
-		return StringVal{TypeVal: StringType, Value: astNode.(AST.StringLiteral).Value}
+		return MK_STRING(astNode.(AST.StringLiteral).Value)
 	case AST.ReturnStmtType:
-		return ReturnVal{TypeVal: ReturnType, Value: Evaluate(astNode.(AST.ReturnStmt).Value, env)}
+		return MK_RETURN(Evaluate(astNode.(AST.ReturnStmt).Value, env))
 	case AST.VectorLiteralType:
 		return Eval_vector_expr(astNode.(AST.VectorLiteral), env)
 	case AST.IndexExprType:

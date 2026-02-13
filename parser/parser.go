@@ -11,38 +11,37 @@ import (
 
 type Parser struct {
 	tokens []LEX.Token
+	pos    int
 }
 
 func (p *Parser) peek() LEX.Token {
-	return p.tokens[0]
+	return p.tokens[p.pos]
 }
 
 func (p *Parser) consume() LEX.Token {
-	var token LEX.Token = p.peek()
-	p.tokens = p.tokens[1:]
-
+	token := p.tokens[p.pos]
+	p.pos++
 	return token
 }
 
 func (p *Parser) expect(tokenType LEX.TokenType, errorMessage string) LEX.Token {
 	if p.peek().Type == tokenType {
 		return p.consume()
-	} else {
-		fmt.Println(errorMessage)
-		os.Exit(1)
 	}
+	fmt.Println(errorMessage)
+	os.Exit(1)
 	return LEX.Token{}
 }
 
 func (p *Parser) not_Eof() bool {
-	return p.tokens[0].Type != LEX.EOF
+	return p.tokens[p.pos].Type != LEX.EOF
 }
 
 func (p *Parser) ProduceAst(sourceCode string) AST.Program {
-
 	p.tokens = LEX.Tokenize(sourceCode)
+	p.pos = 0
 
-	var program AST.Program = AST.Program{KindValue: AST.ProgramType, Body: []AST.Stmt{}}
+	var program AST.Program = AST.Program{Body: make([]AST.Stmt, 0, 16)}
 
 	for p.not_Eof() {
 		program.Body = append(program.Body, p.parseStmt())
@@ -80,10 +79,9 @@ func (p *Parser) parseStmt() AST.Stmt {
 }
 
 func (p *Parser) parseVectorDeclaration() AST.Stmt {
-
 	p.consume()
 
-	var elements []AST.Expr = []AST.Expr{}
+	elements := make([]AST.Expr, 0, 4)
 
 	for p.not_Eof() && p.peek().Type != LEX.CloseBracket {
 		elements = append(elements, p.parseExpr())
@@ -95,13 +93,13 @@ func (p *Parser) parseVectorDeclaration() AST.Stmt {
 
 	p.expect(LEX.CloseBracket, "Error: Missing Closing Bracket")
 
-	return AST.VectorLiteral{KindValue: AST.VectorLiteralType, Elements: elements}
+	return AST.VectorLiteral{Elements: elements}
 }
 
 func (p *Parser) parseReturnStatement() AST.Stmt {
 	p.consume()
 	value := p.parseExpr()
-	return AST.ReturnStmt{KindValue: AST.ReturnStmtType, Value: value}
+	return AST.ReturnStmt{Value: value}
 }
 
 func (p *Parser) parseIfStatement() AST.Stmt {
@@ -127,7 +125,7 @@ func (p *Parser) parseIfStatement() AST.Stmt {
 		}
 	}
 
-	return AST.IfStmt{KindValue: AST.IfStmtType, Test: left_expr, Body: body.(AST.BlockStmt), Alternate: alternate}
+	return AST.IfStmt{Test: left_expr, Body: body.(AST.BlockStmt), Alternate: alternate}
 }
 
 func (p *Parser) parseForStatement() AST.Stmt {
@@ -148,7 +146,7 @@ func (p *Parser) parseForStatement() AST.Stmt {
 
 	body := p.parseBlockStmt()
 
-	return AST.ForStmt{KindValue: AST.ForStmtType, Init: init, Test: test, Update: update, Body: body.(AST.BlockStmt)}
+	return AST.ForStmt{Init: init, Test: test, Update: update, Body: body.(AST.BlockStmt)}
 }
 
 func (p *Parser) parseFunctionDeclaration() AST.Stmt {
@@ -156,7 +154,7 @@ func (p *Parser) parseFunctionDeclaration() AST.Stmt {
 	iden := p.expect(LEX.Identifier, "Error: Missing Identifier")
 
 	args := p.parseArguments()
-	params := []string{}
+	params := make([]string, 0, len(args))
 
 	for _, arg := range args {
 		if arg.Kind() != AST.IdentifierType {
@@ -168,13 +166,13 @@ func (p *Parser) parseFunctionDeclaration() AST.Stmt {
 
 	body := p.parseBlockStmt()
 
-	return AST.FunctionDeclaration{KindValue: AST.FunctionDeclarationType, Identifier: iden.Value, Parameters: params, Body: body.(AST.BlockStmt)}
+	return AST.FunctionDeclaration{Identifier: iden.Value, Parameters: params, Body: body.(AST.BlockStmt)}
 }
 
 func (p *Parser) parseBlockStmt() AST.Stmt {
 	p.expect(LEX.OpenBrace, "Error: Missing Opening Brace")
 
-	var body []AST.Stmt = []AST.Stmt{}
+	body := make([]AST.Stmt, 0, 8)
 
 	for p.not_Eof() && p.peek().Type != LEX.CloseBrace {
 		body = append(body, p.parseStmt())
@@ -182,7 +180,7 @@ func (p *Parser) parseBlockStmt() AST.Stmt {
 
 	p.expect(LEX.CloseBrace, "Error: Missing Closing Brace")
 
-	return AST.BlockStmt{KindValue: AST.BlockStmtType, Body: body}
+	return AST.BlockStmt{Body: body}
 }
 
 func (p *Parser) parseVariableDeclaration() AST.Stmt {
@@ -200,7 +198,6 @@ func (p *Parser) parseVariableDeclaration() AST.Stmt {
 		}
 
 		return AST.VariableDeclaration{
-			KindValue:  AST.VariableDeclarationType,
 			Constant:   isConst,
 			Identifier: isIdentifier.Value,
 		}
@@ -209,7 +206,6 @@ func (p *Parser) parseVariableDeclaration() AST.Stmt {
 	p.expect(LEX.Equals, "Error: Missing Equals")
 
 	dec := AST.VariableDeclaration{
-		KindValue:  AST.VariableDeclarationType,
 		Constant:   isConst,
 		Identifier: isIdentifier.Value,
 		Value:      p.parseExpr(),
@@ -227,20 +223,33 @@ func (p *Parser) parseAssignmentExpr() AST.Expr {
 	if p.peek().Type == LEX.Equals {
 		p.consume()
 		right := p.parseAssignmentExpr()
-		return AST.AssignmentExpr{KindValue: AST.AssignmentExprType, Left: left, Right: right}
+		return AST.AssignmentExpr{Left: left, Right: right}
 	}
 
 	return left
 }
 
 func (p *Parser) parseAndStatement() AST.Expr {
+	left := p.parseComparisonExpr()
+
+	// FIX: use for loop instead of if so chained &&/|| works (a && b && c)
+	for p.peek().Value == "&&" || p.peek().Value == "||" {
+		op := p.consume().Value
+		right := p.parseComparisonExpr()
+		left = AST.BinaryExpr{Operator: op, Left: left, Right: right}
+	}
+	return left
+}
+
+func (p *Parser) parseComparisonExpr() AST.Expr {
 	left := p.parseAdditiveExpr()
 
-	if p.peek().Value == "&&" || p.peek().Value == "||" {
+	for p.peek().Value == "==" || p.peek().Value == "!=" || p.peek().Value == "<" || p.peek().Value == ">" || p.peek().Value == "<=" || p.peek().Value == ">=" {
 		op := p.consume().Value
 		right := p.parseAdditiveExpr()
-		left = AST.BinaryExpr{KindValue: "BinaryExpr", Operator: op, Left: left, Right: right}
+		left = AST.BinaryExpr{Operator: op, Left: left, Right: right}
 	}
+
 	return left
 }
 
@@ -252,7 +261,7 @@ func (p *Parser) parseOjbectExpr() AST.Expr {
 
 	// OPEN BRACE
 	p.consume()
-	properties := []AST.Property{}
+	properties := make([]AST.Property, 0, 4)
 
 	// { key }
 	for p.not_Eof() && p.peek().Type != LEX.CloseBrace {
@@ -260,17 +269,17 @@ func (p *Parser) parseOjbectExpr() AST.Expr {
 
 		if p.peek().Type == LEX.Comma {
 			p.consume()
-			prop := AST.Property{KindValue: AST.PropertyType, Key: key.Value, Value: nil}
+			prop := AST.Property{Key: key.Value, Value: nil}
 			properties = append(properties, prop)
 			continue
 		} else if p.peek().Type == LEX.CloseBrace {
-			prop := AST.Property{KindValue: AST.PropertyType, Key: key.Value, Value: nil}
+			prop := AST.Property{Key: key.Value, Value: nil}
 			properties = append(properties, prop)
 			continue
 		} else if p.peek().Type == LEX.Colon {
 			p.consume()
 			value := p.parseExpr()
-			prop := AST.Property{KindValue: AST.PropertyType, Key: key.Value, Value: value}
+			prop := AST.Property{Key: key.Value, Value: value}
 			properties = append(properties, prop)
 		}
 
@@ -281,16 +290,16 @@ func (p *Parser) parseOjbectExpr() AST.Expr {
 
 	p.expect(LEX.CloseBrace, "Error: Missing Closing Brace")
 
-	return AST.ObjectLiteral{KindValue: AST.OjectLiteralType, Properties: properties}
+	return AST.ObjectLiteral{Properties: properties}
 }
 
 func (p *Parser) parseAdditiveExpr() AST.Expr {
 	left := p.parseMultiplicativeExpr()
 
-	for p.peek().Value == "+" || p.peek().Value == "-" || p.peek().Value == "==" || p.peek().Value == "!=" || p.peek().Value == "<" || p.peek().Value == ">" || p.peek().Value == "<=" || p.peek().Value == ">=" {
+	for p.peek().Value == "+" || p.peek().Value == "-" || p.peek().Value == "&" || p.peek().Value == "|" {
 		op := p.consume().Value
 		right := p.parseMultiplicativeExpr()
-		left = AST.BinaryExpr{KindValue: "BinaryExpr", Operator: op, Left: left, Right: right}
+		left = AST.BinaryExpr{Operator: op, Left: left, Right: right}
 	}
 
 	return left
@@ -302,7 +311,7 @@ func (p *Parser) parseMultiplicativeExpr() AST.Expr {
 	for p.peek().Value == "*" || p.peek().Value == "/" || p.peek().Value == "%" {
 		op := p.consume().Value
 		right := p.parseCallMemberExpr()
-		left = AST.BinaryExpr{KindValue: "BinaryExpr", Operator: op, Left: left, Right: right}
+		left = AST.BinaryExpr{Operator: op, Left: left, Right: right}
 	}
 
 	return left
@@ -318,9 +327,10 @@ func (p *Parser) parseCallMemberExpr() AST.Expr {
 }
 
 func (p *Parser) parseCallExpr(caller AST.Expr) AST.Expr {
-	var call AST.Expr = AST.CallExpr{KindValue: "CallExpr", Caller: caller, Arguments: p.parseArguments()}
+	var call AST.Expr = AST.CallExpr{Caller: caller, Arguments: p.parseArguments()}
 
-	if p.peek().Type == LEX.OpenBrace {
+	// FIX: check for OpenParenthesis instead of OpenBrace for chained calls like foo()()
+	if p.peek().Type == LEX.OpenParenthesis {
 		call = p.parseCallExpr(call)
 	}
 	return call
@@ -330,7 +340,7 @@ func (p *Parser) parseArguments() []AST.Expr {
 
 	p.expect(LEX.OpenParenthesis, "Error: Missing Opening Parenthesis")
 
-	var arguments []AST.Expr = []AST.Expr{}
+	var arguments []AST.Expr
 
 	if p.peek().Type != LEX.CloseParenthesis {
 		arguments = p.parseArgumentsList()
@@ -342,7 +352,7 @@ func (p *Parser) parseArguments() []AST.Expr {
 }
 
 func (p *Parser) parseArgumentsList() []AST.Expr {
-	var args []AST.Expr = []AST.Expr{p.parseAssignmentExpr()}
+	args := []AST.Expr{p.parseAssignmentExpr()}
 
 	for p.peek().Type == LEX.Comma {
 		p.consume()
@@ -369,14 +379,14 @@ func (p *Parser) parseMemberAndVectorExpr() AST.Expr {
 				os.Exit(1)
 			}
 
-			object = AST.MemberExpr{KindValue: "MemberExpr", Object: object, Property: property, Computed: computed}
+			object = AST.MemberExpr{Object: object, Property: property, Computed: computed}
 
 		}
 
 		if operator.Type == LEX.OpenBracket {
-			index := p.parsePrimaryExpr()
+			index := p.parseExpr()
 
-			object = AST.IndexExpr{KindValue: "IndexExpr", Array: object, Index: index}
+			object = AST.IndexExpr{Array: object, Index: index}
 
 			p.expect(LEX.CloseBracket, "Error: Missing Closing Bracket")
 		}
@@ -392,11 +402,11 @@ func (p *Parser) parsePrimaryExpr() AST.Expr {
 	switch tk {
 
 	case LEX.Identifier:
-		return AST.Identifier{KindValue: "Identifier", Symbol: p.consume().Value}
+		return AST.Identifier{Symbol: p.consume().Value}
 	case LEX.Number:
-		return AST.NumericLiteral{KindValue: "NumericLiteral", Value: p.parseInt(p.consume().Value)}
+		return AST.NumericLiteral{Value: p.parseInt(p.consume().Value)}
 	case LEX.String:
-		return AST.StringLiteral{KindValue: "StringLiteral", Value: p.consume().Value}
+		return AST.StringLiteral{Value: p.consume().Value}
 	case LEX.OpenBracket:
 		return p.parseVectorDeclaration()
 	case LEX.OpenParenthesis:

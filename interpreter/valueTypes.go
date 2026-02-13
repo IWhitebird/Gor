@@ -6,18 +6,18 @@ import (
 	AST "github.com/iwhitebird/Gor/ast"
 )
 
-type ValueType string
+type ValueType int
 
 const (
-	NullType       ValueType = "null"
-	NumberType     ValueType = "number"
-	StringType     ValueType = "string"
-	BoolType       ValueType = "bool"
-	ObjectType     ValueType = "object"
-	VectorType     ValueType = "vector"
-	NativeFuncType ValueType = "nativeFunc"
-	FunctionType   ValueType = "function"
-	ReturnType     ValueType = "return"
+	NullType ValueType = iota
+	NumberType
+	StringType
+	BoolType
+	ObjectType
+	VectorType
+	NativeFuncType
+	FunctionType
+	ReturnType
 )
 
 type RuntimeVal interface {
@@ -25,152 +25,108 @@ type RuntimeVal interface {
 }
 
 type NullVal struct {
-	TypeVal ValueType
-	Value   *string
+	Value *string
 }
 
 func (n NullVal) Type() ValueType {
-	return n.TypeVal
+	return NullType
 }
 
 type NumberVal struct {
-	TypeVal ValueType
-	Value   int
+	Value int
 }
 
 func (n NumberVal) Type() ValueType {
-	return n.TypeVal
+	return NumberType
 }
 
 type StringVal struct {
-	TypeVal ValueType
-	Value   string
+	Value string
 }
 
 func (s StringVal) Type() ValueType {
-	return s.TypeVal
+	return StringType
 }
 
 type BoolVal struct {
-	TypeVal ValueType
-	Value   bool
+	Value bool
 }
 
 func (b BoolVal) Type() ValueType {
-	return b.TypeVal
+	return BoolType
 }
 
 type VectorVal struct {
-	TypeVal  ValueType
 	Elements []RuntimeVal
 }
 
 func (v VectorVal) Type() ValueType {
-	return v.TypeVal
+	return VectorType
 }
 
 type ObjectVal struct {
-	TypeVal    ValueType
 	Properties map[string]RuntimeVal
 }
 
 func (o ObjectVal) Type() ValueType {
-	return o.TypeVal
+	return ObjectType
 }
 
 type FunctionCall func(args []RuntimeVal, env *Environment) RuntimeVal
 
 type NativeFuncVal struct {
-	TypeVal ValueType
-	Call    FunctionCall
+	Call FunctionCall
 }
 
 func (n NativeFuncVal) Type() ValueType {
-	return n.TypeVal
+	return NativeFuncType
 }
 
 type FunctionVal struct {
-	TypeVal    ValueType
 	Name       string
 	Parameters []string
 	Body       AST.BlockStmt
-	Env        Environment
+	Env        *Environment // FIX: pointer instead of value copy to avoid aliased maps
 }
 
 func (f FunctionVal) Type() ValueType {
-	return f.TypeVal
+	return FunctionType
 }
 
 type ReturnVal struct {
-	TypeVal ValueType
-	Value   RuntimeVal
+	Value RuntimeVal
 }
 
 func (r ReturnVal) Type() ValueType {
-	return r.TypeVal
+	return ReturnType
 }
 
-// Instant Make Function
+// Cached singletons to avoid repeated allocations
+var nullSingleton = NullVal{Value: nil}
+var trueVal = BoolVal{Value: true}
+var falseVal = BoolVal{Value: false}
 
 func MK_RETURN(value RuntimeVal) ReturnVal {
-	return ReturnVal{
-		TypeVal: ReturnType,
-		Value:   value,
-	}
+	return ReturnVal{Value: value}
 }
 
 func MK_NULL() NullVal {
-	return NullVal{
-		TypeVal: NullType,
-		Value:   nil,
-	}
+	return nullSingleton
 }
 
-func MK_NUMBER(values ...int) NumberVal {
-	var value int
-
-	if len(values) > 0 {
-		value = values[0]
-	} else {
-		// Default value if not provided
-		value = 0
-	}
-
-	return NumberVal{
-		TypeVal: NumberType,
-		Value:   value,
-	}
+func MK_NUMBER(value int) NumberVal {
+	return NumberVal{Value: value}
 }
 
-func MK_STRING(values ...string) StringVal {
-	var value string
-
-	if len(values) > 0 {
-		value = values[0]
-	} else {
-		// Default value if not provided
-		value = ""
-	}
-
-	return StringVal{
-		TypeVal: StringType,
-		Value:   value,
-	}
+func MK_STRING(value string) StringVal {
+	return StringVal{Value: value}
 }
 
-func MK_BOOL(values ...bool) BoolVal {
-	var value bool
-	if len(values) > 0 {
-		value = values[0]
-	} else {
-		// Default value if not provided
-		value = true
+func MK_BOOL(value bool) BoolVal {
+	if value {
+		return trueVal
 	}
-
-	return BoolVal{
-		TypeVal: BoolType,
-		Value:   value,
-	}
+	return falseVal
 }
 
 func MK_OBJECT(properties ...map[string]RuntimeVal) ObjectVal {
@@ -179,21 +135,14 @@ func MK_OBJECT(properties ...map[string]RuntimeVal) ObjectVal {
 	if len(properties) > 0 {
 		value = properties[0]
 	} else {
-		// Default value if not provided
 		value = make(map[string]RuntimeVal)
 	}
 
-	return ObjectVal{
-		TypeVal:    ObjectType,
-		Properties: value,
-	}
+	return ObjectVal{Properties: value}
 }
 
 func MK_NATIVE_FUNC(call FunctionCall) NativeFuncVal {
-	return NativeFuncVal{
-		TypeVal: NativeFuncType,
-		Call:    call,
-	}
+	return NativeFuncVal{Call: call}
 }
 
 func RuntimeVal_Wrapper(val RuntimeVal) interface{} {
@@ -210,7 +159,6 @@ func RuntimeVal_Wrapper(val RuntimeVal) interface{} {
 		return val.(ObjectVal).Properties
 	}
 
-	// Return a default value in case the type is not recognized
 	return nil
 }
 

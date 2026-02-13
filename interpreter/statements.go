@@ -24,8 +24,6 @@ func Eval_block_statement(blockStmt AST.BlockStmt, env *Environment) RuntimeVal 
 	var lastEvaluated RuntimeVal = MK_NULL()
 	for _, statement := range blockStmt.Body {
 
-		// fmt.Println("Evaluating AST Node", statement.Kind())
-
 		lastEvaluated = Evaluate(statement, env)
 
 		if lastEvaluated.Type() == ReturnType {
@@ -48,11 +46,10 @@ func Eval_variable_declaration(variableDeclaration AST.VariableDeclaration, env 
 func Eval_function_declaration(functionDeclaration AST.FunctionDeclaration, env *Environment) RuntimeVal {
 
 	function := FunctionVal{
-		TypeVal:    FunctionType,
 		Name:       functionDeclaration.Identifier,
 		Parameters: functionDeclaration.Parameters,
 		Body:       functionDeclaration.Body,
-		Env:        *env,
+		Env:        env, // FIX: store pointer for proper closure semantics
 	}
 
 	return env.DeclareVar(functionDeclaration.Identifier, function, false)
@@ -62,7 +59,8 @@ func Eval_if_statement(declaration AST.IfStmt, env *Environment) RuntimeVal {
 
 	test := Evaluate(declaration.Test, env)
 
-	if test.(BoolVal).Value {
+	// FIX: use IsTruthy instead of direct BoolVal assertion
+	if IsTruthy(test) {
 		return Eval_body(declaration.Body, env, true)
 	} else if declaration.Alternate != nil {
 		return Eval_body(declaration.Alternate, env, true)
@@ -100,19 +98,23 @@ func Eval_for_statement(declaration AST.ForStmt, env *Environment) RuntimeVal {
 	update := declaration.Update
 	body := declaration.Body
 
-	if !test.(BoolVal).Value {
+	// FIX: use IsTruthy instead of direct BoolVal assertion
+	if !IsTruthy(test) {
 		return MK_NULL()
 	}
 
 	for {
 
 		new_newenv := NewEnvironment(newenv)
-		Eval_body(body, new_newenv, false)
+		result := Eval_body(body, new_newenv, false)
+		if result.Type() == ReturnType {
+			return result
+		}
 		Eval_assignment_expr(update.(AST.AssignmentExpr), newenv)
 
 		test = Evaluate(declaration.Test, newenv)
 
-		if !test.(BoolVal).Value {
+		if !IsTruthy(test) {
 			break
 		}
 	}
