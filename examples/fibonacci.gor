@@ -1,0 +1,31 @@
+# Fibonacci — recursive and iterative
+
+# Recursive (simple but slow for large n)
+fn fibRecursive(n) {
+    if (n <= 1) {
+        return n
+    }
+    return fibRecursive(n - 1) + fibRecursive(n - 2)
+}
+
+# Iterative (fast)
+fn fibIterative(n) {
+    let a = 0
+    let b = 1
+    for (let i = 0; i < n; i = i + 1) {
+        let temp = b
+        b = a + b
+        a = temp
+    }
+    return a
+}
+
+print("Fibonacci (recursive):")
+for (let i = 0; i < 10; i = i + 1) {
+    print(fibRecursive(i))
+}
+
+print("Fibonacci (iterative):")
+for (let i = 0; i < 20; i = i + 1) {
+    print(fibIterative(i))
+}

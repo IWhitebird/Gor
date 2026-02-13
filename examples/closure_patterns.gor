@@ -1,0 +1,70 @@
+# Closure Patterns — demonstrating first-class functions
+
+# 1. Counter factory
+fn makeCounter(start) {
+    let count = start
+    fn increment() {
+        count = count + 1
+        return count
+    }
+    return increment
+}
+
+let counter = makeCounter(0)
+print("Counter:")
+print(counter())
+print(counter())
+print(counter())
+
+# 2. Adder factory
+fn makeAdder(x) {
+    fn add(y) {
+        return x + y
+    }
+    return add
+}
+
+let add10 = makeAdder(10)
+let add50 = makeAdder(50)
+print("add10(5):")
+print(add10(5))
+print("add50(5):")
+print(add50(5))
+
+# 3. Accumulator — remembers running total
+fn makeAccumulator() {
+    let total = 0
+    fn accumulate(n) {
+        total = total + n
+        return total
+    }
+    return accumulate
+}
+
+let acc = makeAccumulator()
+print("Accumulator:")
+print(acc(10))
+print(acc(20))
+print(acc(30))
+
+# 4. Pair — getter/setter using closures
+fn makePair(initial) {
+    let value = initial
+    fn getVal() {
+        return value
+    }
+    fn setVal(v) {
+        value = v
+        return value
+    }
+    return [getVal, setVal]
+}
+
+let pair = makePair(42)
+let get = pair[0]
+let set = pair[1]
+print("Initial value:")
+print(get())
+set(100)
+print("After set(100):")
+print(get())

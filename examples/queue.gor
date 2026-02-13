@@ -1,0 +1,45 @@
+# Queue — First In, First Out (FIFO)
+# Using an array with head and tail pointers
+
+let queue = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+let head = 0
+let tail = 0
+
+fn enqueue(val) {
+    queue[tail] = val
+    tail = tail + 1
+    return val
+}
+
+fn dequeue() {
+    if (head == tail) {
+        print("Queue is empty!")
+        return 0
+    }
+    let val = queue[head]
+    head = head + 1
+    return val
+}
+
+fn queueSize() {
+    return tail - head
+}
+
+# Enqueue values
+enqueue(10)
+enqueue(20)
+enqueue(30)
+enqueue(40)
+
+print("Queue size:")
+print(queueSize())
+
+print("Dequeue:")
+print(dequeue())
+print(dequeue())
+
+print("Queue size after 2 dequeues:")
+print(queueSize())
+
+print("Next in queue:")
+print(dequeue())

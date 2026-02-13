@@ -1,9 +1,0 @@
-let a = {
-    holo : {
-        my : "gg"
-    }
-}
-
-a.holo.my = "hhhh"
-
-print(a)

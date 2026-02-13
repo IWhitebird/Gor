@@ -1,0 +1,67 @@
+# Linked List — using nested objects
+# Each node: { val: <value>, next: <node or null> }
+
+fn makeNode(val, next) {
+    return { val: val, next: next }
+}
+
+# Build list: 1 -> 2 -> 3 -> 4 -> 5
+let list = makeNode(1,
+    makeNode(2,
+        makeNode(3,
+            makeNode(4,
+                makeNode(5, null)
+            )
+        )
+    )
+)
+
+# Traverse and print all values
+fn printList(node) {
+    if (node == null) {
+        return 0
+    }
+    print(node.val)
+    return printList(node.next)
+}
+
+print("Full list:")
+printList(list)
+
+# Sum all values
+fn sumList(node) {
+    if (node == null) {
+        return 0
+    }
+    return node.val + sumList(node.next)
+}
+
+print("Sum:")
+print(sumList(list))
+
+# Count length
+fn listLength(node) {
+    if (node == null) {
+        return 0
+    }
+    return 1 + listLength(node.next)
+}
+
+print("Length:")
+print(listLength(list))
+
+# Find a value
+fn contains(node, target) {
+    if (node == null) {
+        return false
+    }
+    if (node.val == target) {
+        return true
+    }
+    return contains(node.next, target)
+}
+
+print("Contains 3:")
+print(contains(list, 3))
+print("Contains 9:")
+print(contains(list, 9))

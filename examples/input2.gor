@@ -1,0 +1,46 @@
+print("Hi")
+fn series() {
+let one = 0
+    let two = 1
+    let three = 0
+
+    for(let i = 0 ; i  < 10 ; i = i + 1) {
+        three = one + two
+        one = two
+        two = three
+        if(three == 8) {
+            return three
+        }
+        print(three)
+    }
+}
+
+series()
+
+fn tolo() {
+    if (100 > 550) {
+        if (200 > 500) {
+            return 10
+        }
+        return 1
+    }
+    return 30
+}
+
+const resp = tolo()
+print(resp)
+
+
+fn fact(n) {
+    if(n == 0) {
+        return 1
+    }
+
+    return n + fact(n - 1)
+}
+
+let resp = fact(2500)
+
+print(resp)
+print("yol")
+

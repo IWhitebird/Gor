@@ -1,0 +1,42 @@
+# Hash Map — using objects as key-value stores
+# Gor objects are naturally hash maps
+
+fn createMap() {
+    return {}
+}
+
+# Since Gor objects use string keys, we can use them directly
+let map = {
+    alice: 95,
+    bob: 87,
+    charlie: 92,
+    diana: 88
+}
+
+print("Alice's score:")
+print(map.alice)
+
+print("Bob's score:")
+print(map.bob)
+
+# Update a value
+map.bob = 91
+print("Bob's updated score:")
+print(map.bob)
+
+# Add a new entry
+map.eve = 99
+print("Eve's score:")
+print(map.eve)
+
+# Build a student record with nested objects
+let students = {
+    alice: { grade: 95, passed: true },
+    bob: { grade: 91, passed: true },
+    charlie: { grade: 45, passed: false }
+}
+
+print("Charlie passed:")
+print(students.charlie.passed)
+print("Charlie's grade:")
+print(students.charlie.grade)

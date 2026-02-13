@@ -1,0 +1,52 @@
+# Stack — Last In, First Out (LIFO)
+# Using an array and a top pointer
+
+let stack = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+let top = 0
+
+fn push(val) {
+    stack[top] = val
+    top = top + 1
+    return val
+}
+
+fn pop() {
+    if (top == 0) {
+        print("Stack underflow!")
+        return 0
+    }
+    top = top - 1
+    return stack[top]
+}
+
+fn peek() {
+    if (top == 0) {
+        return 0
+    }
+    return stack[top - 1]
+}
+
+fn size() {
+    return top
+}
+
+# Push values
+push(10)
+push(20)
+push(30)
+
+print("Size after 3 pushes:")
+print(size())
+
+print("Peek:")
+print(peek())
+
+print("Pop:")
+print(pop())
+print(pop())
+
+print("Size after 2 pops:")
+print(size())
+
+print("Remaining top:")
+print(peek())
