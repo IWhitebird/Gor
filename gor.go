@@ -1,6 +1,10 @@
 package Gor
 
 import (
+	"encoding/json"
+	"fmt"
+	"os"
+
 	ITR "github.com/iwhitebird/Gor/interpreter"
 	PSR "github.com/iwhitebird/Gor/parser"
 	PGM "github.com/iwhitebird/Gor/program"
@@ -30,15 +34,35 @@ func RunFromInput(input string) <-chan Result {
 	return resultChan
 }
 
-// func RunFromFile(file_path string) <-chan Result {
-// 	resultChan := make(chan Result)
+func RunFromFile(filePath string) {
+	inputFile, err := os.ReadFile(filePath)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: could not read file %q: %v\n", filePath, err)
+		os.Exit(1)
+	}
 
-// 	go func() {
-// 		defer close(resultChan)
+	var env = ITR.EnviromentSetup()
+	var parser = PSR.Parser{}
 
-// 		result, err := PGM.CompleteFile(file_path)
-// 		resultChan <- Result{result, err}
-// 	}()
+	program := parser.ProduceAst(string(inputFile))
+	ITR.Evaluate(program, env)
+}
 
-// 	return resultChan
-// }
+func PrintAST(filePath string) {
+	inputFile, err := os.ReadFile(filePath)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: could not read file %q: %v\n", filePath, err)
+		os.Exit(1)
+	}
+
+	var parser = PSR.Parser{}
+	program := parser.ProduceAst(string(inputFile))
+
+	bodyJSON, err := json.MarshalIndent(program.Body, "", "  ")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error marshaling AST: %v\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Println(string(bodyJSON))
+}
