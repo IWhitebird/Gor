@@ -1,0 +1,40 @@
+---
+title: Control Flow
+description: If/else statements and for loops in Gor.
+---
+
+## If / Else
+
+```js
+let x = 10
+
+if (x > 5) {
+    print("greater")
+} else {
+    print("smaller or equal")
+}
+
+# Chained if/else
+if (x > 20) {
+    print("big")
+} else if (x > 10) {
+    print("medium")
+} else {
+    print("small")
+}
+```
+
+The condition is evaluated for [truthiness](/docs/truthiness). Braces `{}` are required.
+
+## For Loops
+
+C-style for loops with init, condition, and update:
+
+```js
+for (let i = 0; i < 5; i = i + 1) {
+    print(i)
+}
+# Prints: 0 1 2 3 4
+```
+
+All three parts (init, condition, update) are required. The init must be a `let` declaration.

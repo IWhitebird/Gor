@@ -1,0 +1,25 @@
+---
+title: Arrays
+description: Working with ordered, zero-indexed arrays.
+---
+
+Arrays are ordered, zero-indexed collections:
+
+```js
+let arr = [10, 20, 30, 40, 50]
+
+# Access by index
+print(arr[0])    # 10
+print(arr[4])    # 50
+
+# Modify by index
+arr[2] = 99
+print(arr[2])    # 99
+
+# Arrays can hold mixed types
+let mixed = [1, "hello", true, null]
+```
+
+<Callout type="warn">
+Accessing an out-of-bounds index will cause a runtime error.
+</Callout>

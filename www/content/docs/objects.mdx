@@ -1,0 +1,40 @@
+---
+title: Objects
+description: Key-value collections with dot access and nesting.
+---
+
+Objects are key-value collections with string keys:
+
+```js
+let person = {
+    name: "Alice",
+    age: 30,
+    active: true
+}
+
+# Dot access
+print(person.name)    # Alice
+print(person.age)     # 30
+
+# Modify properties
+person.age = 31
+
+# Nested objects
+let data = {
+    user: { name: "Bob", score: 95 }
+}
+print(data.user.name)    # Bob
+print(data.user.score)   # 95
+```
+
+## Shorthand Properties
+
+If a variable name matches the key, you can use shorthand:
+
+```js
+let x = 10
+let y = 20
+let point = { x, y }
+print(point.x)   # 10
+print(point.y)   # 20
+```

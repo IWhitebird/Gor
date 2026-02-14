@@ -1,0 +1,16 @@
+---
+title: Truthiness
+description: How Gor evaluates values in boolean contexts.
+---
+
+Gor uses truthiness for conditions in `if` and `for` statements:
+
+| Value | Truthy? |
+|-------|---------|
+| `false` | Falsy |
+| `0` | Falsy |
+| `""` (empty string) | Falsy |
+| `null` | Falsy |
+| `[]` (empty array) | Falsy |
+| `{}` (empty object) | Falsy |
+| Everything else | Truthy |

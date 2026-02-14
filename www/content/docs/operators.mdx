@@ -1,0 +1,50 @@
+---
+title: Operators
+description: Arithmetic, comparison, logical, and bitwise operators in Gor.
+---
+
+## Arithmetic
+
+| Operator | Description | Example |
+|----------|-------------|---------|
+| `+` | Addition (numbers) or concatenation (strings) | `3 + 4` → `7` |
+| `-` | Subtraction | `10 - 3` → `7` |
+| `*` | Multiplication | `6 * 7` → `42` |
+| `/` | Integer division | `10 / 3` → `3` |
+| `%` | Modulo (remainder) | `10 % 3` → `1` |
+
+## Comparison
+
+| Operator | Description |
+|----------|-------------|
+| `==` | Equal (works across all types) |
+| `!=` | Not equal |
+| `>` | Greater than (numbers and strings) |
+| `<` | Less than |
+| `>=` | Greater than or equal |
+| `<=` | Less than or equal |
+
+## Logical
+
+| Operator | Description |
+|----------|-------------|
+| `&&` | Logical AND (short-circuit) |
+| `\|\|` | Logical OR (short-circuit) |
+
+Logical operators use short-circuit evaluation. `&&` returns the left operand if falsy, otherwise the right. `||` returns the left operand if truthy, otherwise the right.
+
+## Bitwise
+
+| Operator | Description |
+|----------|-------------|
+| `&` | Bitwise AND (numbers) or logical AND (booleans) |
+| `\|` | Bitwise OR (numbers) or logical OR (booleans) |
+
+## String Concatenation
+
+The `+` operator concatenates two strings:
+
+```js
+let greeting = "Hello" + ", " + "World!"
+print(greeting)   # Hello, World!
+```

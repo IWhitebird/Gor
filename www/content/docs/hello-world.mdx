@@ -1,0 +1,35 @@
+---
+title: Hello World
+description: Write your first Gor program.
+---
+
+Create a file called `hello.gor`:
+
+```js title="hello.gor"
+print("Hello, World!")
+```
+
+Run it:
+
+```bash
+./bin/gor hello.gor
+```
+
+Or try it directly in the [Playground](/playground).
+
+## A Bigger Example
+
+```js title="example.gor"
+# Variables
+let name = "Gor"
+const version = 1
+
+print("Welcome to " + name)
+
+# Functions
+fn add(a, b) {
+    return a + b
+}
+
+print(add(40, 2))
+```

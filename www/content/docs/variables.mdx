@@ -1,0 +1,27 @@
+---
+title: Variables
+description: Declaring and using variables with let and const.
+---
+
+Declare variables with `let` (mutable) or `const` (immutable):
+
+```js
+let x = 10
+let name = "Gor"
+const PI = 3
+
+# let can be reassigned
+x = 20
+
+# const cannot be reassigned — this would error:
+# PI = 4
+```
+
+Variables declared with `let` can optionally omit the initializer (defaults to `null`):
+
+```js
+let y
+print(y)   # null
+```
+
+Variables declared with `const` must have an initializer.

@@ -1,0 +1,53 @@
+---
+title: Functions
+description: Declaring functions, closures, and higher-order functions.
+---
+
+Declare functions with `fn`:
+
+```js
+fn add(a, b) {
+    return a + b
+}
+
+print(add(3, 4))   # 7
+```
+
+## Closures
+
+Functions are first-class values. They capture their lexical scope, forming closures:
+
+```js
+fn makeCounter(start) {
+    let count = start
+    fn increment() {
+        count = count + 1
+        return count
+    }
+    return increment
+}
+
+let counter = makeCounter(0)
+print(counter())   # 1
+print(counter())   # 2
+print(counter())   # 3
+```
+
+Each call to `makeCounter` creates a new closure with its own `count` variable. The inner function `increment` captures and modifies the outer variable.
+
+## Higher-Order Functions
+
+Functions can be passed as arguments and returned from other functions:
+
+```js
+fn makeAdder(x) {
+    fn add(y) {
+        return x + y
+    }
+    return add
+}
+
+let add10 = makeAdder(10)
+print(add10(5))    # 15
+print(add10(20))   # 30
+```

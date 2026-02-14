@@ -1,0 +1,25 @@
+---
+title: REPL
+description: Using the Gor interactive REPL.
+---
+
+Start the interactive Read-Eval-Print Loop:
+
+```bash
+./bin/gor --repl
+```
+
+Type Gor expressions and see results immediately. The REPL maintains state between lines, so variables and functions persist within a session.
+
+## Example Session
+
+```
+$ ./bin/gor --repl
+Gor REPL
+> let x = 10
+> print(x + 5)
+15
+> fn double(n) { return n * 2 }
+> print(double(x))
+20
+```

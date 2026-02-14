@@ -1,0 +1,24 @@
+{
+  "title": "Gor Documentation",
+  "pages": [
+    "index",
+    "---Getting Started---",
+    "installation",
+    "hello-world",
+    "repl",
+    "---Language---",
+    "variables",
+    "data-types",
+    "operators",
+    "functions",
+    "control-flow",
+    "arrays",
+    "objects",
+    "---Reference---",
+    "builtins",
+    "comments",
+    "truthiness",
+    "---Examples---",
+    "examples"
+  ]
+}

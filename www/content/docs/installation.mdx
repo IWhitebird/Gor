@@ -1,0 +1,27 @@
+---
+title: Installation
+description: How to install and build Gor from source.
+---
+
+Gor requires **Go 1.22+** to build. Clone the repository and build with Make:
+
+```bash
+git clone https://github.com/IWhitebird/Gor.git
+cd Gor
+make build
+```
+
+This produces the `bin/gor` binary. You can run files, start the REPL, or inspect the AST:
+
+```bash
+./bin/gor file.gor          # Run a source file
+./bin/gor --repl            # Interactive REPL
+./bin/gor --ast file.gor    # Print AST as JSON
+./bin/gor --version         # Print version
+```
+
+Or build manually without Make:
+
+```bash
+go build -o bin/gor ./cmd/gor/
+```
