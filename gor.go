@@ -27,6 +27,11 @@ func RunFromInput(input string) <-chan Result {
 
 	go func() {
 		defer close(resultChan)
+		defer func() {
+			if r := recover(); r != nil {
+				resultChan <- Result{Output: fmt.Sprintf("%v", r), Error: fmt.Errorf("%v", r)}
+			}
+		}()
 		Output, AST, err := PGM.CompleteInput(input)
 		resultChan <- Result{Output, AST, err}
 	}()

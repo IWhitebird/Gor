@@ -1,8 +1,6 @@
 package parser
 
 import (
-	"fmt"
-	"os"
 	"strconv"
 
 	AST "github.com/iwhitebird/Gor/core/ast"
@@ -28,9 +26,7 @@ func (p *Parser) expect(tokenType LEX.TokenType, errorMessage string) LEX.Token 
 	if p.peek().Type == tokenType {
 		return p.consume()
 	}
-	fmt.Println(errorMessage)
-	os.Exit(1)
-	return LEX.Token{}
+	panic(errorMessage)
 }
 
 func (p *Parser) not_Eof() bool {
@@ -53,8 +49,7 @@ func (p *Parser) ProduceAst(sourceCode string) AST.Program {
 func (p *Parser) parseInt(str string) int {
 	i, err := strconv.Atoi(str)
 	if err != nil {
-		fmt.Println("Error: Invalid Number")
-		os.Exit(1)
+		panic("Error: Invalid Number")
 	}
 	return i
 }
@@ -158,8 +153,7 @@ func (p *Parser) parseFunctionDeclaration() AST.Stmt {
 
 	for _, arg := range args {
 		if arg.Kind() != AST.IdentifierType {
-			fmt.Println("Error: Function Parameters must be Identifiers")
-			os.Exit(1)
+			panic("Error: Function Parameters must be Identifiers")
 		}
 		params = append(params, arg.(AST.Identifier).Symbol)
 	}
@@ -193,8 +187,7 @@ func (p *Parser) parseVariableDeclaration() AST.Stmt {
 	if p.peek().Type != LEX.Equals {
 
 		if isConst {
-			fmt.Println("Error: Const Variable Declaration cannot be without a value")
-			os.Exit(1)
+			panic("Error: Const Variable Declaration cannot be without a value")
 		}
 
 		return AST.VariableDeclaration{
@@ -375,8 +368,7 @@ func (p *Parser) parseMemberAndVectorExpr() AST.Expr {
 			computed := false
 
 			if property.Kind() != AST.IdentifierType {
-				fmt.Println("Error: Property must be an Identifier")
-				os.Exit(1)
+				panic("Error: Property must be an Identifier")
 			}
 
 			object = AST.MemberExpr{Object: object, Property: property, Computed: computed}
@@ -416,8 +408,6 @@ func (p *Parser) parsePrimaryExpr() AST.Expr {
 		return expr
 
 	default:
-		fmt.Println("Error: Invalid Token")
-		os.Exit(1)
-		return nil
+		panic("Error: Invalid Token")
 	}
 }

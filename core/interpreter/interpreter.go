@@ -2,7 +2,6 @@ package interpreter
 
 import (
 	"fmt"
-	"os"
 
 	AST "github.com/iwhitebird/Gor/core/ast"
 )
@@ -52,8 +51,6 @@ func Evaluate(astNode AST.Stmt, env *Environment) RuntimeVal {
 
 	// Default
 	default:
-		fmt.Println("Unknown AST Node Type", astNode)
-		os.Exit(1)
+		panic(fmt.Sprintf("Unknown AST Node Type %v", astNode))
 	}
-	return nil
 }

@@ -17,10 +17,13 @@ func CompleteInput(input string) (string, string, error) {
 	program := parser.ProduceAst(input)
 
 	// Redirect stdout to a buffer
-	// Redirect stdout to a buffer
 	rescueStdout := os.Stdout
 	r, w, _ := os.Pipe()
 	os.Stdout = w
+	defer func() {
+		w.Close()
+		os.Stdout = rescueStdout
+	}()
 
 	ITR.Evaluate(program, env)
 

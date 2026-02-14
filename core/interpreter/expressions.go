@@ -2,7 +2,6 @@ package interpreter
 
 import (
 	"fmt"
-	"os"
 
 	AST "github.com/iwhitebird/Gor/core/ast"
 )
@@ -86,8 +85,7 @@ func Eval_binary_op(operator string, lhs RuntimeVal, rhs RuntimeVal) RuntimeVal 
 		if lhs.Type() == StringType && rhs.Type() == StringType {
 			return MK_BOOL(lhs.(StringVal).Value > rhs.(StringVal).Value)
 		}
-		fmt.Println("Error: '>' requires numbers or strings")
-		os.Exit(1)
+		panic("Error: '>' requires numbers or strings")
 	case "<":
 		if lhs.Type() == NumberType && rhs.Type() == NumberType {
 			return MK_BOOL(lhs.(NumberVal).Value < rhs.(NumberVal).Value)
@@ -95,8 +93,7 @@ func Eval_binary_op(operator string, lhs RuntimeVal, rhs RuntimeVal) RuntimeVal 
 		if lhs.Type() == StringType && rhs.Type() == StringType {
 			return MK_BOOL(lhs.(StringVal).Value < rhs.(StringVal).Value)
 		}
-		fmt.Println("Error: '<' requires numbers or strings")
-		os.Exit(1)
+		panic("Error: '<' requires numbers or strings")
 	case ">=":
 		if lhs.Type() == NumberType && rhs.Type() == NumberType {
 			return MK_BOOL(lhs.(NumberVal).Value >= rhs.(NumberVal).Value)
@@ -104,8 +101,7 @@ func Eval_binary_op(operator string, lhs RuntimeVal, rhs RuntimeVal) RuntimeVal 
 		if lhs.Type() == StringType && rhs.Type() == StringType {
 			return MK_BOOL(lhs.(StringVal).Value >= rhs.(StringVal).Value)
 		}
-		fmt.Println("Error: '>=' requires numbers or strings")
-		os.Exit(1)
+		panic("Error: '>=' requires numbers or strings")
 	case "<=":
 		if lhs.Type() == NumberType && rhs.Type() == NumberType {
 			return MK_BOOL(lhs.(NumberVal).Value <= rhs.(NumberVal).Value)
@@ -113,8 +109,7 @@ func Eval_binary_op(operator string, lhs RuntimeVal, rhs RuntimeVal) RuntimeVal 
 		if lhs.Type() == StringType && rhs.Type() == StringType {
 			return MK_BOOL(lhs.(StringVal).Value <= rhs.(StringVal).Value)
 		}
-		fmt.Println("Error: '<=' requires numbers or strings")
-		os.Exit(1)
+		panic("Error: '<=' requires numbers or strings")
 
 	// Arithmetic — + also handles string concatenation
 	case "+":
@@ -124,22 +119,19 @@ func Eval_binary_op(operator string, lhs RuntimeVal, rhs RuntimeVal) RuntimeVal 
 		if lhs.Type() == StringType && rhs.Type() == StringType {
 			return MK_STRING(lhs.(StringVal).Value + rhs.(StringVal).Value)
 		}
-		fmt.Println("Error: '+' requires two numbers or two strings")
-		os.Exit(1)
+		panic("Error: '+' requires two numbers or two strings")
 	case "-":
 		return MK_NUMBER(lhs.(NumberVal).Value - rhs.(NumberVal).Value)
 	case "*":
 		return MK_NUMBER(lhs.(NumberVal).Value * rhs.(NumberVal).Value)
 	case "/":
 		if rhs.(NumberVal).Value == 0 {
-			fmt.Println("Error: Division by zero")
-			os.Exit(1)
+			panic("Error: Division by zero")
 		}
 		return MK_NUMBER(lhs.(NumberVal).Value / rhs.(NumberVal).Value)
 	case "%":
 		if rhs.(NumberVal).Value == 0 {
-			fmt.Println("Error: Modulo by zero")
-			os.Exit(1)
+			panic("Error: Modulo by zero")
 		}
 		return MK_NUMBER(lhs.(NumberVal).Value % rhs.(NumberVal).Value)
 
@@ -185,9 +177,7 @@ func Eval_assignment_expr(assignmentExpr AST.AssignmentExpr, env *Environment) R
 		array.(VectorVal).Elements[int(index.(NumberVal).Value)] = Evaluate(assignmentExpr.Right, env)
 		return array
 	}
-	fmt.Println("Error: Invalid Assignment")
-	os.Exit(1)
-	return MK_NULL()
+	panic("Error: Invalid Assignment")
 }
 
 func Eval_object_expr(objectLiteral AST.ObjectLiteral, env *Environment) RuntimeVal {
@@ -223,8 +213,7 @@ func Eval_call_expr(callExpr AST.CallExpr, env *Environment) RuntimeVal {
 		scope := NewEnvironment(caller.Env)
 
 		if len(caller.Parameters) != len(args) {
-			fmt.Println("Error: Expected", len(caller.Parameters), "arguments, got", len(args))
-			os.Exit(1)
+			panic(fmt.Sprintf("Error: Expected %d arguments, got %d", len(caller.Parameters), len(args)))
 		}
 
 		for i, param := range caller.Parameters {
@@ -239,9 +228,7 @@ func Eval_call_expr(callExpr AST.CallExpr, env *Environment) RuntimeVal {
 		}
 		return result
 	}
-	fmt.Println("Error: Cannot call a non-function value")
-	os.Exit(1)
-	return MK_NULL()
+	panic("Error: Cannot call a non-function value")
 }
 
 func Eval_member_expr(memberExpr AST.MemberExpr, env *Environment) RuntimeVal {
@@ -287,13 +274,10 @@ func Eval_index_expr(indexExpr AST.IndexExpr, env *Environment) RuntimeVal {
 		idx := index.(NumberVal).Value
 		elems := array.(VectorVal).Elements
 		if idx < 0 || idx >= len(elems) {
-			fmt.Println("Error: Index out of bounds:", idx)
-			os.Exit(1)
+			panic(fmt.Sprintf("Error: Index out of bounds: %d", idx))
 		}
 		return elems[idx]
 	}
 
-	fmt.Println("Error: Invalid Index Expression")
-	os.Exit(1)
-	return MK_NULL()
+	panic("Error: Invalid Index Expression")
 }

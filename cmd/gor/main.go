@@ -24,6 +24,12 @@ Flags:
 }
 
 func main() {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", r)
+			os.Exit(1)
+		}
+	}()
 	repl := flag.Bool("repl", false, "Start the interactive REPL")
 	ast := flag.Bool("ast", false, "Print the AST as JSON instead of executing")
 	ver := flag.Bool("version", false, "Print version")

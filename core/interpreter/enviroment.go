@@ -1,9 +1,6 @@
 package interpreter
 
-import (
-	"fmt"
-	"os"
-)
+import "fmt"
 
 type Environment struct {
 	ParentEnv *Environment
@@ -21,8 +18,7 @@ func NewEnvironment(parentEnv *Environment) *Environment {
 
 func (env *Environment) DeclareVar(varname string, value RuntimeVal, optionalParams ...bool) RuntimeVal {
 	if _, exists := env.Variables[varname]; exists {
-		fmt.Println("ERROR : Cannot declare variable, As it already is defined.", varname)
-		os.Exit(1)
+		panic("ERROR : Cannot declare variable, As it already is defined. " + varname)
 	}
 
 	isConst := false
@@ -43,8 +39,7 @@ func (env *Environment) AssignVar(varname string, value RuntimeVal) RuntimeVal {
 
 	// FIX: check Constants on the resolved env, not the current one
 	if resolvedEnv.Constants[varname] {
-		fmt.Println("ERROR : Cannot assign to constant variable.", varname)
-		os.Exit(1)
+		panic("ERROR : Cannot assign to constant variable. " + varname)
 	}
 
 	resolvedEnv.Variables[varname] = value
@@ -62,8 +57,7 @@ func (env *Environment) Resolve(varname string) *Environment {
 	}
 
 	if env.ParentEnv == nil {
-		fmt.Println("ERROR Cannot resolve, as it does not exist.", varname)
-		os.Exit(1)
+		panic("ERROR Cannot resolve, as it does not exist. " + varname)
 	}
 
 	return env.ParentEnv.Resolve(varname)
