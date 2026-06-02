@@ -2,7 +2,7 @@
 
 # Gor Language
 
-Gor is an interpreted programming language made with Golang. It has similar syntax to that of JavaScript. Zero external dependencies — pure Go standard library.
+Gor is an interpreted programming language made with Golang. It has similar syntax to that of JavaScript. Zero external dependencies, pure Go standard library.
 
 ## Prerequisites
 
